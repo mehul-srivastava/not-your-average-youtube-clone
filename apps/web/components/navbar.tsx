@@ -1,15 +1,9 @@
-"use client";
-
-import axios from "axios";
+import UploadButton from "./upload-button";
 
 const Navbar = () => {
-  async function handleUpload() {
-    const response = await axios.post("/api/upload");
-  }
-
   return (
-    <nav className="border-b p-4 text-right">
-      <button onClick={handleUpload}>Upload</button>
+    <nav className="border-b p-4 flex justify-end gap-4">
+      <UploadButton />
     </nav>
   );
 };
