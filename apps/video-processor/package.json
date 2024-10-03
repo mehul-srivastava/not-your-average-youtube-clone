@@ -1,0 +1,22 @@
+{
+  "name": "video-processor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+    "build": "tsup",
+    "lint": "eslint src/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.664.0",
+    "@aws-sdk/client-sqs": "^3.664.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0"
+  }
+}
