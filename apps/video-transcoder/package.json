@@ -1,0 +1,23 @@
+{
+  "name": "video-transcoder-container",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.664.0",
+    "@aws-sdk/client-sqs": "^3.664.0",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0"
+  }
+}
