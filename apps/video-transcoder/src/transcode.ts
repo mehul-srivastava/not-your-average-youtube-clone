@@ -13,7 +13,7 @@ import uploadTranscodedVideos from "./upload";
 const exec = util.promisify(child_process.exec);
 
 async function transcodeVideo() {
-  const originalVideo = path.resolve(__dirname, "/raw", params.Key);
+  const originalVideo = path.resolve(__dirname, "../raw/", params.Key);
 
   const bitrates = [
     { quality: "360p", bitrate: "1.5M" },
@@ -21,12 +21,14 @@ async function transcodeVideo() {
     { quality: "720p", bitrate: "7.5M" },
   ];
 
-  const promises = bitrates.map(async ({ bitrate, quality }) => {
-    const command = `ffmpeg -i ${originalVideo} -b:v ${bitrate} -b:a ${bitrate} -codec:a aac transcoded/${params.Key}-${quality}.mp4`;
-    await exec(command);
-  });
+  for (const { bitrate, quality } of bitrates) {
+    const command = `ffmpeg -i ${originalVideo} -b:v ${bitrate} -b:a ${bitrate} -codec:a aac transcoded/${params.Key.slice(0, params.Key.length - 4)}-${quality}.mp4`;
 
-  await Promise.all(promises);
+    console.log("Transcoding:", quality);
+    await exec(command);
+  }
+
+  console.log("Transcoding completed");
 
   uploadTranscodedVideos();
 }
