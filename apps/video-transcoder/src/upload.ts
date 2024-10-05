@@ -11,6 +11,7 @@ async function uploadTranscodedVideos() {
 
   for (const file of files) {
     const filePath = path.resolve(destinationPath, file);
+
     const command = new PutObjectCommand({
       Bucket: "youtube-clone-transcoded",
       Key: file,
@@ -18,8 +19,9 @@ async function uploadTranscodedVideos() {
     });
 
     console.log("Uploading:", file);
-
     await s3Client.send(command);
+
+    // To avoid being rate-limitted
     await new Promise((res) => setTimeout(res, 3000));
   }
 

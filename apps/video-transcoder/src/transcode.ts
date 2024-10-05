@@ -23,7 +23,6 @@ async function transcodeVideo() {
 
   for (const { bitrate, quality } of bitrates) {
     const command = `ffmpeg -i ${originalVideo} -b:v ${bitrate} -b:a ${bitrate} -codec:a aac transcoded/${params.Key.slice(0, params.Key.length - 4)}-${quality}.mp4`;
-
     console.log("Transcoding:", quality);
     await exec(command);
   }
