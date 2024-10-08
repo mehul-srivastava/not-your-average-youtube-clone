@@ -1,10 +1,10 @@
 import fsPromisified from "node:fs/promises";
 import fs from "node:fs";
 import path from "path";
-import { DeleteMarkerReplicationStatus, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 import { s3Client, sqsClient } from "./config";
-import { DeleteMessageCommand, DeleteQueueCommand } from "@aws-sdk/client-sqs";
+import { DeleteMessageCommand } from "@aws-sdk/client-sqs";
 
 async function uploadTranscodedVideos() {
   const destinationPath = path.join(__dirname, "../", "transcoded/");
