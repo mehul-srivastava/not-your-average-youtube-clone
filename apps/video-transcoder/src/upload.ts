@@ -1,9 +1,10 @@
 import fsPromisified from "node:fs/promises";
 import fs from "node:fs";
 import path from "path";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteMarkerReplicationStatus, PutObjectCommand } from "@aws-sdk/client-s3";
 
-import { s3Client } from "./config";
+import { s3Client, sqsClient } from "./config";
+import { DeleteMessageCommand, DeleteQueueCommand } from "@aws-sdk/client-sqs";
 
 async function uploadTranscodedVideos() {
   const destinationPath = path.join(__dirname, "../", "transcoded/");
@@ -24,6 +25,12 @@ async function uploadTranscodedVideos() {
     // To avoid being rate-limitted
     await new Promise((res) => setTimeout(res, 3000));
   }
+
+  const command = new DeleteMessageCommand({
+    QueueUrl: "https://sqs.eu-north-1.amazonaws.com/886436961672/youtube-clone-raw-video-s3-events",
+    ReceiptHandle: process.env.RECEIPT_HANDLE!,
+  });
+  await sqsClient.send(command);
 
   console.log("Uploading completed");
 }
