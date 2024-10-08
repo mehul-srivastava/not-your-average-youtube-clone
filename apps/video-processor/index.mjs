@@ -47,18 +47,27 @@ const params = {
 };
 
 export const handler = async (event) => {
-  const videoKey = event.Records[0].body.Records[0].s3.object.key;
-  const receiptHandle = event.Records[0].receiptHandle;
+  try {
+    const s3Notification = JSON.parse(event.Records[0].body);
+    const videoKey = s3Notification.Records[0].s3.object.key;
+    const receiptHandle = event.Records[0].receiptHandle;
 
-  params.overrides.containerOverrides[0].environment[0].value = videoKey;
-  params.overrides.containerOverrides[0].environment[1].value = receiptHandle;
+    params.overrides.containerOverrides[0].environment[0].value = videoKey;
+    params.overrides.containerOverrides[0].environment[1].value = receiptHandle;
 
-  const command = new RunTaskCommand(params);
-  const response = await client.send(command);
+    const command = new RunTaskCommand(params);
+    const response = await client.send(command);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "Task command sent" }),
-    response,
-  };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Task command sent" }),
+      response,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: e.message }),
+    };
+  }
 };
