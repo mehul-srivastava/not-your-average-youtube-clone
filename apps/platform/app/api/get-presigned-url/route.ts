@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   const key = filename.substring(0, filename.length - 4) + new Date().getTime() + ".mp4";
 
   const command = new PutObjectCommand({
-    Bucket: "temporary.youtube.clone",
+    Bucket: "youtube-clone-temporary",
     Key: key,
   });
 
