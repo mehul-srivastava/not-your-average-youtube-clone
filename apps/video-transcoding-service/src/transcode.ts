@@ -24,7 +24,7 @@ async function transcodeVideo() {
     const command = getFFmpegCommand(originFile, bitrate, quality, destinationFile);
     console.log("Transcoding:", quality);
 
-    // await exec(command);
+    await exec(command);
   }
 
   console.log("Transcoding completed");

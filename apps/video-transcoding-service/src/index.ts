@@ -9,13 +9,13 @@ fs.mkdirSync(paths.origin, { recursive: true });
 fs.mkdirSync(paths.destination, { recursive: true });
 
 async function downloadVideoFromS3() {
-  // const data = await s3Client.send(
-  //   new GetObjectCommand({
-  //     Bucket: args.Bucket,
-  //     Key: `${args.Folder}/${args.Key}`,
-  //   })
-  // );
-  // await downloadToLocal(data.Body as Readable);
+  const data = await s3Client.send(
+    new GetObjectCommand({
+      Bucket: args.Bucket,
+      Key: `${args.Folder}/${args.Key}`,
+    })
+  );
+  await downloadToLocal(data.Body as Readable);
 }
 
 async function downloadToLocal(body: Readable) {
