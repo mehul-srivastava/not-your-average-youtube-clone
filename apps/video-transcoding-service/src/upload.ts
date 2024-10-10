@@ -1,29 +1,28 @@
 import fsPromisified from "node:fs/promises";
 import fs from "node:fs";
-import path from "path";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import path from "node:path";
+import { args, bitrates, paths, s3Client, sqsClient } from "./config";
 
-import { s3Client, sqsClient } from "./config";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { DeleteMessageCommand } from "@aws-sdk/client-sqs";
 
 async function uploadTranscodedVideos() {
-  const destinationPath = path.join(__dirname, "../", "transcoded/");
-  const files = await fsPromisified.readdir(destinationPath);
+  for (const { quality } of bitrates) {
+    const files = await fsPromisified.readdir(paths.destination + quality);
 
-  for (const file of files) {
-    const filePath = path.resolve(destinationPath, file);
+    for (const file of files) {
+      const command = new PutObjectCommand({
+        Bucket: "youtube-clone-transcoded",
+        Key: args.Folder + "/" + quality + "/" + file,
+        Body: fs.createReadStream(path.resolve(paths.destination, quality, file)),
+      });
 
-    const command = new PutObjectCommand({
-      Bucket: "youtube-clone-transcoded",
-      Key: file,
-      Body: fs.createReadStream(filePath),
-    });
+      console.log("Uploading:", file);
+      await s3Client.send(command);
 
-    console.log("Uploading:", file);
-    await s3Client.send(command);
-
-    // To avoid being rate-limitted
-    await new Promise((res) => setTimeout(res, 3000));
+      // To avoid being rate-limitted
+      await new Promise((res) => setTimeout(res, 200));
+    }
   }
 
   const command = new DeleteMessageCommand({

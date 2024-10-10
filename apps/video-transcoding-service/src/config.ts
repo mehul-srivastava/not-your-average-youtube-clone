@@ -1,13 +1,26 @@
+import dotenv from "dotenv";
+import path from "node:path";
 import { S3Client } from "@aws-sdk/client-s3";
 import { SQSClient } from "@aws-sdk/client-sqs";
-import dotenv from "dotenv";
 
 dotenv.config();
 
-export const params = {
+export const args = {
   Bucket: process.env.BUCKET_NAME!,
-  Key: process.env.KEY!,
+  Folder: process.env.VIDEO_FOLDER!,
+  Key: process.env.VIDEO_KEY!,
 };
+
+export const paths = {
+  origin: path.join(__dirname, "../raw/"),
+  destination: path.join(__dirname, "../transcoded/"),
+};
+
+export const bitrates = [
+  { quality: "360p", bitrate: "1.5M" },
+  // { quality: "480p", bitrate: "4M" },
+  // { quality: "720p", bitrate: "7.5M" },
+];
 
 export const s3Client = new S3Client({
   region: "eu-north-1",
