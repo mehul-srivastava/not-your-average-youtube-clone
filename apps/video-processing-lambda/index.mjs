@@ -29,12 +29,16 @@ const params = {
         name: process.env.AWS_ECS_CONTAINER_NAME,
         environment: [
           {
-            name: "KEY",
+            name: "VIDEO_FOLDER",
+            value: "", // inserted by handler
+          },
+          {
+            name: "VIDEO_KEY",
             value: "", // inserted by handler
           },
           {
             name: "RECEIPT_HANDLE",
-            value: "",
+            value: "", // inserted by handler
           },
           {
             name: "BUCKET_NAME",
@@ -49,11 +53,13 @@ const params = {
 export const handler = async (event) => {
   try {
     const s3Notification = JSON.parse(event.Records[0].body);
-    const videoKey = s3Notification.Records[0].s3.object.key;
-    const receiptHandle = event.Records[0].receiptHandle;
 
-    params.overrides.containerOverrides[0].environment[0].value = videoKey;
-    params.overrides.containerOverrides[0].environment[1].value = receiptHandle;
+    const completeFilePath = s3Notification.Records[0].s3.object.key.split("/");
+    params.overrides.containerOverrides[0].environment[0].value = completeFilePath[0];
+    params.overrides.containerOverrides[0].environment[1].value = completeFilePath[1];
+
+    const receiptHandle = event.Records[0].receiptHandle;
+    params.overrides.containerOverrides[0].environment[2].value = receiptHandle;
 
     const command = new RunTaskCommand(params);
     const response = await client.send(command);
