@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.vjs-live-icon {
+  background: red !important;
+  width: min-content !important;
+  width: 10px !important;
+  border-radius: 50% !important;
+  height: 10px !important;
+  margin-block: auto !important;
+  margin-right: 5px !important;
+}

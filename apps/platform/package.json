@@ -14,7 +14,10 @@
     "axios": "^1.7.7",
     "next": "14.2.6",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "video.js": "^8.18.1",
+    "@videojs/http-streaming": "^3.15.0",
+    "@videojs/themes": "^1.0.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
