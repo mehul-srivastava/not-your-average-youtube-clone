@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
 import "./globals.css";
+import "@repo/shadcn/globals.css";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 
@@ -23,14 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <main className="bg-primary relative min-h-[4000px] w-full">
+        <main className="bg-brand relative min-h-[4000px] w-full">
           {/* order should be maintained - first navbar then sidebar; padding 80px is same as sidebar width  */}
-          <div className="bg-primary fixed inset-0 h-[70px] w-full pl-[80px]">
+          <div className="bg-brand fixed inset-0 h-[70px] w-full pl-[80px]">
             <Navbar />
           </div>
 
           {/* width is 10px more than navbar height */}
-          <div className="bg-primary fixed inset-0 h-full max-w-[80px]">
+          <div className="bg-brand fixed inset-0 h-full max-w-[80px]">
             <Sidebar />
           </div>
 

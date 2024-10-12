@@ -2,6 +2,8 @@ import Link from "next/link";
 import LiveStreamButton from "./live-stream-button";
 import UploadButton from "./upload-button";
 
+import { Button } from "@repo/shadcn/components/ui/button";
+
 const Navbar = () => {
   return (
     <nav className="flex h-full w-full items-center justify-between border-b border-b-gray-700/70 px-5 text-white">
@@ -13,16 +15,20 @@ const Navbar = () => {
         />
       </Link>
 
-      <div className="flex items-center gap-4 text-sm">
-        <button>hello</button>
-        <button>hello</button>
-        <button>hello</button>
+      <div className="flex items-center gap-4">
+        <Button variant="destructive" size="sm" className="text-xs">
+          Live Stream
+        </Button>
+        <Button variant="secondary" size="sm" className="text-xs">
+          Upload
+        </Button>
         <img
           src="https://random.imagecdn.app/100/300"
-          className="h-8 w-8 rounded-md"
+          className="h-9 w-9 rounded-md"
           alt="user image"
         />
       </div>
+
       {/* <UploadButton />
       <LiveStreamButton /> */}
     </nav>

@@ -1,9 +1,8 @@
 import type { Config } from "tailwindcss";
 
-import baseConfig from "@repo/tailwind-config";
+import baseConfig from "@repo/shadcn/tailwind.config";
 
-const config: Pick<Config, "content" | "presets"> = {
-  content: ["./**/*.tsx"],
+const config: Pick<Config, "presets"> = {
   presets: [baseConfig],
 };
 
