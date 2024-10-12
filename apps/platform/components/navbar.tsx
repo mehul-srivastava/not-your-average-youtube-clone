@@ -17,7 +17,7 @@ const Navbar = () => {
 
       <div className="flex items-center gap-4">
         <Button variant="destructive" size="sm" className="text-xs">
-          Live Stream
+          Start Live
         </Button>
         <Button variant="secondary" size="sm" className="text-xs">
           Upload

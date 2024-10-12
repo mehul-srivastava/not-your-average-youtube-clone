@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Baloo_Paaji_2 } from "next/font/google";
 
-import "./globals.css";
+import "../globals.css";
 import "@repo/shadcn/globals.css";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 
-const montserrat = Montserrat({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+const balooPaaji2 = Baloo_Paaji_2({
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin", "latin-ext"],
 });
 
@@ -22,16 +22,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={montserrat.className}>
-        <main className="bg-brand relative min-h-[4000px] w-full">
+    <html lang="en" className="bg-brand dark">
+      <body className={balooPaaji2.className}>
+        <main className="bg-brand relative min-h-screen w-full">
           {/* order should be maintained - first navbar then sidebar; padding 80px is same as sidebar width  */}
-          <div className="bg-brand fixed inset-0 h-[70px] w-full pl-[80px]">
+          <div className="bg-brand fixed inset-0 z-40 h-[70px] w-full pl-[80px]">
             <Navbar />
           </div>
 
           {/* width is 10px more than navbar height */}
-          <div className="bg-brand fixed inset-0 h-full max-w-[80px]">
+          <div className="bg-brand fixed inset-0 z-40 h-full max-w-[80px]">
             <Sidebar />
           </div>
 
