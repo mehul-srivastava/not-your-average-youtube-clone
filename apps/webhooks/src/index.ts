@@ -1,9 +1,10 @@
-import { Hono } from 'hono'
+import { Hono } from "hono";
 
-const app = new Hono()
+const app = new Hono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+/* Handle progress based on  */
+app.get("/progress-handler", (c) => {
+  return c.text("Hello Hono!");
+});
 
-export default app
+export default app;

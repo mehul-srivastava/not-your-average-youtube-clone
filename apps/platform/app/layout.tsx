@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
-import Navbar from "../components/navbar";
 import "./globals.css";
+import Navbar from "@/components/navbar";
+import Sidebar from "@/components/sidebar";
 
 const montserrat = Montserrat({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -22,8 +23,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <Navbar />
-        <main>{children}</main>
+        <main className="bg-primary relative min-h-[4000px] w-full">
+          {/* order should be maintained - first navbar then sidebar; padding 80px is same as sidebar width  */}
+          <div className="bg-primary fixed inset-0 h-[70px] w-full pl-[80px]">
+            <Navbar />
+          </div>
+
+          {/* width is 10px more than navbar height */}
+          <div className="bg-primary fixed inset-0 h-full max-w-[80px]">
+            <Sidebar />
+          </div>
+
+          {/* padding-top same as navbar height; padding-left same as sidebar width */}
+          <div className="pl-[80px] pt-[70px] text-white">{children}</div>
+        </main>
       </body>
     </html>
   );
