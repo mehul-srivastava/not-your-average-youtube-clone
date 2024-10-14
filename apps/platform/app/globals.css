@@ -21,3 +21,16 @@ body {
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
   scrollbar-width: none; /* For Firefox */
 }
+
+@media (min-width: 769px) {
+  .otnansirk-theater-mode-button .video-js-content,
+  .otnansirk-theater-mode-button .video-js-curriculum {
+    margin-top: 35rem;
+  }
+}
+@media (min-width: 769px) {
+  .otnansirk-theater-mode-button .video-js-player {
+    position: absolute;
+    width: 97%;
+  }
+}

@@ -10,15 +10,15 @@
 
   # Add 144p stream
   echo "#EXT-X-STREAM-INF:BANDWIDTH=144000,RESOLUTION=256x144" >> master.m3u8
-  echo "144p/144p.m3u8" >> master.m3u8
+  echo "144p/index.m3u8" >> master.m3u8
 
   # Add 360p stream
   echo "#EXT-X-STREAM-INF:BANDWIDTH=360000,RESOLUTION=640x360" >> master.m3u8
-  echo "360p/360p.m3u8" >> master.m3u8
+  echo "360p/index.m3u8" >> master.m3u8
 
   # Add 720p stream
   echo "#EXT-X-STREAM-INF:BANDWIDTH=1280000,RESOLUTION=1280x720" >> master.m3u8
-  echo "720p/720p.m3u8" >> master.m3u8
+  echo "720p/index.m3u8" >> master.m3u8
 
  * 
  * save it in a script file and execute it to generate the master.m3u8 and store it in s3 root dir
@@ -40,11 +40,17 @@ const exec = util.promisify(child_process.exec);
 async function transcodeVideo() {
   const originFile = path.resolve(paths.origin, args.Key);
 
-  for (const { bitrate, quality } of bitrates) {
+  for (const { bitrate, dimensions } of bitrates) {
+    const quality = dimensions.split(":")[1] as string;
     const destinationFile = prepAndGetDestinationFile(quality);
     console.log("Prepping directory:", quality);
 
-    const command = getFFmpegCommand(originFile, bitrate, quality, destinationFile);
+    const command = getFFmpegCommand(
+      originFile,
+      bitrate,
+      dimensions,
+      destinationFile,
+    );
     console.log("Transcoding:", quality);
 
     await exec(command);
@@ -56,17 +62,23 @@ async function transcodeVideo() {
 
 function prepAndGetDestinationFile(quality: string) {
   fs.mkdirSync(paths.destination + quality, { recursive: true });
-  return paths.destination + quality + "/" + `${args.Key.slice(0, -4)}-${quality}.mp4`;
+  return (
+    paths.destination +
+    quality +
+    "/" +
+    `${args.Key.slice(0, -4)}-${quality}.mp4`
+  );
 }
 
 function getFFmpegCommand(
   originFile: string,
   bitrate: string,
-  quality: string,
-  destinationFile: string
+  dimensions: string,
+  destinationFile: string,
 ) {
+  const quality = dimensions.split(":")[1] as string;
   return (
-    `ffmpeg -i ${originFile} -vf "scale=-2:${quality}" -b:v ${bitrate} -b:a 128k -codec:a aac ${destinationFile} && ` +
+    `ffmpeg -i ${originFile} -vf scale=${dimensions} -b:v ${bitrate} -b:a 128k -codec:a aac ${destinationFile} && ` +
     `ffmpeg -i ${destinationFile} -f hls -hls_time 3 -hls_list_size 0 -hls_segment_filename ${paths.destination}${quality}/'segment%03d.ts' ${paths.destination}${quality}/index.m3u8`
   );
 }

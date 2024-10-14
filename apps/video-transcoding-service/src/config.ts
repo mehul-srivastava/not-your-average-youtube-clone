@@ -17,9 +17,9 @@ export const paths = {
 };
 
 export const bitrates = [
-  { quality: "144p", bitrate: "200k" },
-  { quality: "360p", bitrate: "600k" },
-  { quality: "720p", bitrate: "1200k" },
+  { bitrate: "200k", dimensions: "256:144" },
+  { bitrate: "600k", dimensions: "640:360" },
+  { bitrate: "1200k", dimensions: "1280:720" },
 ];
 
 export const s3Client = new S3Client({
