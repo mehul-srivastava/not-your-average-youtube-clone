@@ -28,7 +28,7 @@ const Sidebar = () => {
 
       <ul className="flex h-full flex-col gap-4 overflow-auto text-center">
         {Array.from(new Array(6)).map((item) => (
-          <li>
+          <li key={item}>
             <div className="mx-auto h-5 w-5 rounded-full bg-[url(https://random.imagecdn.app/100/300)] bg-cover"></div>
           </li>
         ))}

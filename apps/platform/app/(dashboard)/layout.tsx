@@ -5,6 +5,7 @@ import "../globals.css";
 import "@repo/shadcn/globals.css";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
+import ToastProvider from "@/components/providers/toast-provider";
 
 const balooPaaji2 = Baloo_Paaji_2({
   weight: ["400", "500", "600", "700", "800"],
@@ -24,17 +25,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-brand dark">
       <body className={balooPaaji2.className}>
+        <ToastProvider />
         <main className="bg-brand relative min-h-screen w-full">
           {/* order should be maintained - first navbar then sidebar; padding 80px is same as sidebar width  */}
           <div className="bg-brand fixed inset-0 z-40 h-[70px] w-full pl-[80px]">
             <Navbar />
           </div>
-
           {/* width is 10px more than navbar height */}
           <div className="bg-brand fixed inset-0 z-40 h-full max-w-[80px]">
             <Sidebar />
           </div>
-
           {/* padding-top same as navbar height; padding-left same as sidebar width */}
           <div className="pl-[80px] pt-[70px] text-white">{children}</div>
         </main>

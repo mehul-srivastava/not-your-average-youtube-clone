@@ -23,7 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "@video-js-plugins/videojs-theater-mode-button": "^1.0.1",
-    "lucide-react": "^0.452.0"
+    "lucide-react": "^0.452.0",
+    "react-hot-toast": "^2.4.1"
   }
 }

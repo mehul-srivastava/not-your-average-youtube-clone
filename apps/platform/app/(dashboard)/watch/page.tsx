@@ -15,7 +15,7 @@ const page = () => {
       </div>
       <div className="flex w-3/12 flex-col gap-4">
         {Array.from(new Array(20)).map((item) => (
-          <RecommendVideo />
+          <RecommendVideo key={item} />
         ))}
       </div>
     </div>

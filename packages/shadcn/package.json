@@ -21,12 +21,16 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.0.2",
+    "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.395.0",
+    "react-hook-form": "^7.53.0",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "exports": {
     "./globals.css": "./src/globals.css",

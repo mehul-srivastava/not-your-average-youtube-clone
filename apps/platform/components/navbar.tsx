@@ -16,9 +16,11 @@ const Navbar = () => {
       </Link>
 
       <div className="flex items-center gap-4">
-        <Button variant="destructive" size="sm" className="text-xs">
-          Start Live
-        </Button>
+        <Link href="/live">
+          <Button variant="destructive" size="sm" className="text-xs">
+            Start Live
+          </Button>
+        </Link>
         <Button variant="secondary" size="sm" className="text-xs">
           Upload
         </Button>

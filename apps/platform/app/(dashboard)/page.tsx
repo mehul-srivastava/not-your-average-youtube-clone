@@ -20,9 +20,10 @@ const page = () => {
           {Array.from(new Array(3)).map((item) => (
             <Link
               className="rounded-md p-4 transition-all duration-200 hover:bg-black"
+              key={item}
               href="/live/2121"
             >
-              <div className="relative h-48 w-full rounded-sm bg-[url(https://loremflickr.com/cache/resized/65535_53471298489_1ff026f193_z_600_400_nofilter.jpg)] bg-cover">
+              <div className="relative h-48 w-full rounded-sm bg-[url(https://random.imagecdn.app/600/400)] bg-cover">
                 <div className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-[url(https://www.pngplay.com/wp-content/uploads/13/Google-Logo-PNG-Photo-Image.png)] bg-cover shadow-md"></div>
               </div>
 
@@ -53,8 +54,9 @@ const page = () => {
             <a
               className="rounded-md p-2 transition-all duration-200 hover:bg-black"
               href="/"
+              key={item}
             >
-              <div className="relative h-48 w-full rounded-sm bg-[url(https://loremflickr.com/cache/resized/65535_53471298489_1ff026f193_z_600_400_nofilter.jpg)] bg-cover" />
+              <div className="relative h-48 w-full rounded-sm bg-[url(https://random.imagecdn.app/600/400)] bg-cover" />
 
               <div className="mt-3 flex items-center justify-between">
                 <p className="flex items-center gap-2 text-sm text-gray-500">
