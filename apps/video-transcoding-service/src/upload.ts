@@ -30,6 +30,15 @@ async function uploadTranscodedVideos() {
     }
   }
 
+  // Upload master manifest
+  const masterManifestCommand = new PutObjectCommand({
+    Bucket: process.env.AWS_S3_DESTINATION_BUCKET_NAME!,
+    Key: videoSuperdata.Folder + "/" + "master.m3u8",
+    Body: fs.createReadStream(path.resolve(paths.destination, "master.m3u8")),
+  });
+  await s3Client.send(masterManifestCommand);
+
+  // Deleting message from queue to avoid infinite loop
   const command = new DeleteMessageCommand({
     QueueUrl: process.env.AWS_SQS_QUEUE_URL,
     ReceiptHandle: process.env.AWS_SQS_MESSAGE_RECEIPT_HANDLE,

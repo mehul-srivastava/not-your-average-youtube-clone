@@ -5,9 +5,6 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 import transcodeVideo from "./transcode";
 import { paths, videoSuperdata, s3Client } from "./config";
 
-fs.mkdirSync(paths.origin, { recursive: true });
-fs.mkdirSync(paths.destination, { recursive: true });
-
 async function downloadVideoFromS3() {
   const data = await s3Client.send(
     new GetObjectCommand({
@@ -39,5 +36,7 @@ async function downloadToLocal(body: Readable) {
 
 downloadVideoFromS3().then(async () => {
   await transcodeVideo();
+
+  console.log("Gracefully exiting...");
   process.exit(0);
 });
