@@ -23,8 +23,7 @@ const VideoPlayer = ({ isLive, m3u8Url }: IVideoPlayerProps) => {
         sources: [
           {
             src: m3u8Url,
-            // type: "application/x-mpegURL",
-            type: "video/mp4",
+            type: "application/x-mpegURL",
           },
         ],
       });

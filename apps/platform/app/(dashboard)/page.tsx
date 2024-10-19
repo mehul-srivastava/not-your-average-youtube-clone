@@ -21,7 +21,7 @@ const page = () => {
             <Link
               className="rounded-md p-4 transition-all duration-200 hover:bg-black"
               key={item}
-              href="/live/2121"
+              href="/live-stream/2121"
             >
               <div className="relative h-48 w-full rounded-sm bg-[url(https://random.imagecdn.app/600/400)] bg-cover">
                 <div className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-[url(https://www.pngplay.com/wp-content/uploads/13/Google-Logo-PNG-Photo-Image.png)] bg-cover shadow-md"></div>
