@@ -13,5 +13,3 @@ RUN npm install
 COPY dist/ dist/
 
 CMD [ "npm", "start" ]
-
-# Definitely run `npm run build` before building the images

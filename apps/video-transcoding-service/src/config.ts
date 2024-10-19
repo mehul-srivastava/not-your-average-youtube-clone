@@ -5,10 +5,12 @@ import { SQSClient } from "@aws-sdk/client-sqs";
 
 dotenv.config();
 
-export const args = {
-  Bucket: process.env.BUCKET_NAME!,
-  Folder: process.env.VIDEO_FOLDER!,
-  Key: process.env.VIDEO_KEY!,
+const fullVideoKey = process.env.VIDEO_KEY!;
+
+export const videoSuperdata = {
+  Bucket: process.env.AWS_S3_SOURCE_BUCKET_NAME!,
+  Folder: fullVideoKey.split("/")[0]!,
+  Key: fullVideoKey.split("/")[1]!,
 };
 
 export const paths = {

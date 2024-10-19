@@ -1,7 +1,5 @@
 /**
- * what youtube prescribes: https://support.google.com/youtube/answer/1722171?hl=en#zippy=%2Caudio-codec-aac-lc%2Ccontainer-mp%2Cbitrate%2Cframe-rate
- * command: ffmpeg -i pw.mp4  -b:v 128k -b:a 128k -codec:a aac output128.mp4
- * hls command: ffmpeg -i pw.mp4 -b:v 128k -b:a 128k -codec:a aac -f hls -hls_time 10 -hls_list_size 0 -hls_segment_filename 'segment%03d.ts' output.m3u8
+ * youtube prescription about video transcodes: https://support.google.com/youtube/answer/1722171?hl=en#zippy=%2Caudio-codec-aac-lc%2Ccontainer-mp%2Cbitrate%2Cframe-rate
  * 
  * #!/bin/bash
   # Create master.m3u8 file
@@ -23,8 +21,6 @@
  * 
  * save it in a script file and execute it to generate the master.m3u8 and store it in s3 root dir
  * 
- * remove env vars if it is possible to do ops without them
- * 
  */
 
 import util from "node:util";
@@ -32,26 +28,19 @@ import child_process from "node:child_process";
 import path from "node:path";
 import fs from "node:fs";
 
-import { args, bitrates, paths } from "./config";
+import { videoSuperdata, bitrates, paths } from "./config";
 import uploadTranscodedVideos from "./upload";
 
 const exec = util.promisify(child_process.exec);
+const originFile = path.resolve(paths.origin, videoSuperdata.Key);
 
 async function transcodeVideo() {
-  const originFile = path.resolve(paths.origin, args.Key);
-
   for (const { bitrate, dimensions } of bitrates) {
-    const quality = dimensions.split(":")[1] as string;
-    const destinationFile = prepAndGetDestinationFile(quality);
-    console.log("Prepping directory:", quality);
+    const qualityWithPixel = (dimensions.split(":")[1] + "p") as string;
+    const destinationFile = prepAndGetDestinationFile(qualityWithPixel);
 
-    const command = getFFmpegCommand(
-      originFile,
-      bitrate,
-      dimensions,
-      destinationFile,
-    );
-    console.log("Transcoding:", quality);
+    const command = getFFmpegCommand(bitrate, dimensions, destinationFile);
+    console.log("Transcoding:", qualityWithPixel);
 
     await exec(command);
   }
@@ -61,26 +50,19 @@ async function transcodeVideo() {
 }
 
 function prepAndGetDestinationFile(quality: string) {
-  fs.mkdirSync(paths.destination + quality, { recursive: true });
-  return (
-    paths.destination +
-    quality +
-    "/" +
-    `${args.Key.slice(0, -4)}-${quality}.mp4`
-  );
+  const destination = paths.destination + quality;
+
+  fs.mkdirSync(destination, { recursive: true });
+  return destination;
 }
 
 function getFFmpegCommand(
-  originFile: string,
   bitrate: string,
   dimensions: string,
-  destinationFile: string,
+  destinaton: string,
 ) {
-  const quality = dimensions.split(":")[1] as string;
-  return (
-    `ffmpeg -i ${originFile} -vf scale=${dimensions} -b:v ${bitrate} -b:a 128k -codec:a aac ${destinationFile} && ` +
-    `ffmpeg -i ${destinationFile} -f hls -hls_time 3 -hls_list_size 0 -hls_segment_filename ${paths.destination}${quality}/'segment%03d.ts' ${paths.destination}${quality}/index.m3u8`
-  );
+  return `ffmpeg -i ${originFile} -vf scale=${dimensions} -b:v ${bitrate} -b:a 128k -codec:a aac \
+    -f hls -hls_time 3 -hls_list_size 0 -hls_segment_filename ${destinaton}/'segment%03d.ts' ${destinaton}/index.m3u8`;
 }
 
 export default transcodeVideo;
