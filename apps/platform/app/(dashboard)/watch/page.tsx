@@ -9,7 +9,7 @@ const page = () => {
   return (
     <div className="flex gap-4 p-10">
       <div className="flex w-9/12 flex-col gap-4">
-        <VideoPlayer m3u8Url="/index.m3u8" isLive={false} />
+        <VideoPlayer m3u8Url="/oceans.mp4" isLive={false} />
         <VideoMetadata />
         <CommentSection />
       </div>

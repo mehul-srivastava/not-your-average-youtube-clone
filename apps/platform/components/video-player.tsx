@@ -20,12 +20,6 @@ const VideoPlayer = ({ isLive, m3u8Url }: IVideoPlayerProps) => {
         autoplay: true,
         preload: "auto",
         techOrder: ["html5"],
-        sources: [
-          {
-            src: m3u8Url,
-            type: "application/x-mpegURL",
-          },
-        ],
       });
 
       if (isLive && !customControlAdded) {
@@ -52,6 +46,10 @@ const VideoPlayer = ({ isLive, m3u8Url }: IVideoPlayerProps) => {
           poster="//vjs.zencdn.net/v/oceans.png"
           data-setup=""
         >
+          <source
+            src="https://dbamfvca6yflw.cloudfront.net/1bf2bf80643829860a70a4367470fb/master.m3u8"
+            type="application/x-mpegURL"
+          />
           <p className="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading
             to a web browser that
