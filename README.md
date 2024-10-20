@@ -3,6 +3,12 @@
 - check the entire flow again
 - cleanup directories and code (processor, transcoder and platform)
 
+CURRENT TASKS
+- work on hls quality, currently videojs is loading a lot of chunks
+- videojs is EXTREMELY BUGGY
+- live chat implementations
+
+
 STEPS (Watch Videos)
 - first connect postgres (add dummy data using prisma studio)
 - fetch all videos for now (later recommendation system, add the surprise feature coming soon thing)
