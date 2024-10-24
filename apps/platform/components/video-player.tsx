@@ -6,14 +6,15 @@ import Player from "video.js/dist/types/player";
 
 // @ts-ignore
 import qualitySelector from "videojs-hls-quality-selector";
-import * as hell from "videojs-contrib-quality-levels";
+import * as _ from "videojs-contrib-quality-levels";
 
 interface IVideoPlayerProps {
   isLive: boolean;
   m3u8Url: string;
+  poster?: string;
 }
 
-const VideoPlayer = ({ isLive, m3u8Url }: IVideoPlayerProps) => {
+const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
   const vidRef = useRef<HTMLVideoElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   let customControlAdded = false;
@@ -26,7 +27,6 @@ const VideoPlayer = ({ isLive, m3u8Url }: IVideoPlayerProps) => {
       enableSmoothSeeking: true,
       fluid: true,
       responsive: true,
-      playbackRates: [0.5, 1.0, 1.5, 2.0],
     };
 
     videojs.registerPlugin("hlsQualitySelector", qualitySelector);
@@ -59,11 +59,11 @@ const VideoPlayer = ({ isLive, m3u8Url }: IVideoPlayerProps) => {
         ref={vidRef}
         className="video-js vjs-default-skin vjs-big-play-centered w-full"
         controls
-        width={640}
-        height={800}
+        width={600}
+        height={600}
         loop={false}
         preload="auto"
-        poster="//vjs.zencdn.net/v/oceans.png" // have to change poster
+        poster={poster} // have to change poster
         data-setup=""
       >
         <source src={m3u8Url} type="application/x-mpegURL" />

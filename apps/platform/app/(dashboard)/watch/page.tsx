@@ -12,6 +12,7 @@ const page = () => {
         <VideoPlayer
           m3u8Url="https://dbamfvca6yflw.cloudfront.net/1bf2bf80643829860a70a4367470fb/master.m3u8"
           isLive={false}
+          poster={"https://vjs.zencdn.net/v/oceans.png"}
         />
         <VideoMetadata />
         <CommentSection />
