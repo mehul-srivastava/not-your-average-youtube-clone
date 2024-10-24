@@ -1,5 +1,7 @@
 import NodeMediaServer from "node-media-server";
 
+const APP_NAME = "live";
+
 const httpConfig = {
   port: 7123,
   allow_origin: "*",
@@ -18,7 +20,7 @@ const transConfig = {
   ffmpeg: "./ffmpeg",
   tasks: [
     {
-      app: "live",
+      app: APP_NAME,
       hls: true,
       hlsFlags: "[hls_time=2:hls_list_size=3:hls_flags=delete_segments]",
       hlsKeep: false,
