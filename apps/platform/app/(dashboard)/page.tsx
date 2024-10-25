@@ -7,8 +7,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import prisma from "@/clients/prisma";
 
-const page = () => {
+const page = async () => {
+  const liveStreams = await prisma.liveStream.findMany({});
+
   return (
     <div className="flex flex-col gap-10 p-10">
       <div>
@@ -17,30 +20,32 @@ const page = () => {
           <h2 className="text-xl">Discover Live</h2>
         </div>
         <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          {Array.from(new Array(3)).map((item) => (
-            <Link
-              className="rounded-md p-4 transition-all duration-200 hover:bg-black"
-              key={item}
-              href="/live-stream/2121"
-            >
-              <div className="relative h-48 w-full rounded-sm bg-[url(https://random.imagecdn.app/600/400)] bg-cover">
-                <div className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-[url(https://www.pngplay.com/wp-content/uploads/13/Google-Logo-PNG-Photo-Image.png)] bg-cover shadow-md"></div>
-              </div>
+          {liveStreams.length <= 0 && "No creator is streaming right now!"}
+          {liveStreams.length > 0 &&
+            liveStreams.map((item) => (
+              <Link
+                className="rounded-md p-4 transition-all duration-200 hover:bg-black"
+                key={item.id}
+                href={"/live-stream/".concat(item.rtmpSecretKey)}
+              >
+                <div className="relative h-48 w-full rounded-sm bg-[url(https://random.imagecdn.app/600/400)] bg-cover">
+                  <div className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-[url(https://www.pngplay.com/wp-content/uploads/13/Google-Logo-PNG-Photo-Image.png)] bg-cover shadow-md"></div>
+                </div>
 
-              <div className="mt-3 flex items-center justify-between">
-                <p className="flex items-center gap-2 text-sm text-gray-500">
-                  <UsersRoundIcon className="text-destructive h-4 w-4" />
-                  <span>886 watching</span>
-                </p>
-                <p className="text-sm text-gray-500">25 minutes ago</p>
-              </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <p className="flex items-center gap-2 text-sm text-gray-500">
+                    <UsersRoundIcon className="text-destructive h-4 w-4" />
+                    <span>886 watching</span>
+                  </p>
+                  <p className="text-sm text-gray-500">25 minutes ago</p>
+                </div>
 
-              <h3 className="mt-2">ADOBE Max 2021: Day 1 Highlights</h3>
-              <small className="flex items-center gap-2 text-base text-gray-500">
-                Youtube <CheckIcon className="h-3 w-3 text-emerald-500" />
-              </small>
-            </Link>
-          ))}
+                <h3 className="mt-2">ADOBE Max 2021: Day 1 Highlights</h3>
+                <small className="flex items-center gap-2 text-base text-gray-500">
+                  Youtube <CheckIcon className="h-3 w-3 text-emerald-500" />
+                </small>
+              </Link>
+            ))}
         </div>
       </div>
 

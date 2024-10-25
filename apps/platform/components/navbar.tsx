@@ -16,7 +16,7 @@ const Navbar = () => {
       </Link>
 
       <div className="flex items-center gap-4">
-        <Link href="/live">
+        <Link href="/live-stream">
           <Button variant="destructive" size="sm" className="text-xs">
             Start Live
           </Button>

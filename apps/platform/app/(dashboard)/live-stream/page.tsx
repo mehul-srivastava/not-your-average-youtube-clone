@@ -1,16 +1,16 @@
 "use client";
 
+import React, { useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import React, { useEffect, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@repo/shadcn/components/ui/button";
 import { Textarea } from "@repo/shadcn/components/ui/textarea";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,9 +19,9 @@ import {
 import { Input } from "@repo/shadcn/components/ui/input";
 import { ClipboardCopyIcon } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const page = () => {
-  console.log(window);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ const page = () => {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
         });
-        console.log(stream);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
@@ -52,7 +51,7 @@ const page = () => {
           <video
             ref={videoRef}
             autoPlay
-            className="h-[450px] w-full rounded-[inherit] bg-black"
+            className="h-full w-full rounded-[inherit] bg-black"
           />
         </div>
         <LiveStreamMetadata />
@@ -62,39 +61,59 @@ const page = () => {
 };
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
-  description: z.string().min(2).max(50),
+  title: z.string().min(2).max(50),
+  description: z.string().min(2).max(100),
+  rtmpUrl: z.string(),
+  rtmpSecretKey: z.string(),
 });
 
 const LiveStreamMetadata = () => {
+  const rtmpUrl =
+    process.env.NODE_ENV === "production"
+      ? "rtmp://rtmp.youtube.mehuls.in/live"
+      : "rtmp://localhost:1935/live";
+
+  const rtmpSecretKey = uuidv4().split("-").slice(0, -1).join("-").toString();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      title: "",
       description: "",
+      rtmpUrl: rtmpUrl,
+      rtmpSecretKey: rtmpSecretKey,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const rtmpUrlInputRef = useRef<HTMLInputElement | null>(null);
+  const rtmpSecretKeyInputRef = useRef<HTMLInputElement | null>(null);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const response = await axios.post("/api/live-stream", values);
+    const data = await response.data;
+    console.log(data);
+  }
+
+  function copyToClipboard(
+    ref: React.MutableRefObject<HTMLInputElement | null>,
+  ) {
+    navigator.clipboard.writeText(ref?.current?.value ?? "");
+    toast.success("Copied to clipboard!");
   }
 
   return (
     <div className="w-full">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="username"
+            name="title"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="w-full space-y-1">
                 <FormLabel>Title</FormLabel>
                 <FormControl>
                   <Input placeholder="Mehul's Live Stream" {...field} />
                 </FormControl>
-                <FormDescription>
-                  This is your live stream's name.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -112,30 +131,67 @@ const LiveStreamMetadata = () => {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  This is your live stream's description.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormItem className="space-y-1">
-            <FormLabel>Paste RTMP URL in OBS</FormLabel>
-            <FormControl>
-              <div className="relative">
-                <Input
-                  value="rtmp://rtmp.youtube.mehuls.in/f9db27f4-dc9f-4c5b-b0e0-fe3a0934680c"
-                  className="text-muted-foreground cursor-pointer select-none"
-                />
-                <ClipboardCopyIcon
-                  onClick={() => toast.success("Copied to clipboard!")}
-                  className="absolute right-4 top-3 h-4 w-4 cursor-pointer"
-                />
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <div className="flex gap-2">
+            <FormField
+              control={form.control}
+              name="rtmpUrl"
+              render={({ field }) => (
+                <FormItem className="w-full space-y-1">
+                  <FormLabel htmlFor={field.name}>RTMP Stream URL</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        id={field.name}
+                        readOnly={true}
+                        ref={rtmpUrlInputRef}
+                        className="text-muted-foreground cursor-pointer select-none"
+                      />
+                      <ClipboardCopyIcon
+                        onClick={() => copyToClipboard(rtmpUrlInputRef)}
+                        className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 transform cursor-pointer"
+                        aria-label="Copy to clipboard"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rtmpSecretKey"
+              render={({ field }) => (
+                <FormItem className="w-full space-y-1">
+                  <FormLabel htmlFor={field.name}>RTMP Stream Key</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        id={field.name}
+                        readOnly={true}
+                        ref={rtmpSecretKeyInputRef}
+                        className="text-muted-foreground cursor-pointer select-none"
+                        placeholder="Enter secret stream key"
+                      />
+                      <ClipboardCopyIcon
+                        onClick={() => copyToClipboard(rtmpSecretKeyInputRef)}
+                        className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 transform cursor-pointer"
+                        aria-label="Copy to clipboard" // Accessibility for the icon
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <Button type="submit" size={"sm"} className="text-xs">
             Start Live Stream
           </Button>

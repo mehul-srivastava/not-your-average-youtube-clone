@@ -5,7 +5,6 @@
 
 CURRENT TASKS
 - work on hls quality, currently videojs is loading a lot of chunks
-- videojs is EXTREMELY BUGGY
 - live chat implementations
 
 
