@@ -1,6 +1,4 @@
 import Link from "next/link";
-import LiveStreamButton from "./live-stream-button";
-import UploadButton from "./upload-button";
 
 import { Button } from "@repo/shadcn/components/ui/button";
 

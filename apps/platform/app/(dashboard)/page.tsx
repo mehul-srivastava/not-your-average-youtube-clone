@@ -1,85 +1,72 @@
-import {
-  CheckIcon,
-  EyeIcon,
-  FlameIcon,
-  RadioIcon,
-  UsersRoundIcon,
-} from "lucide-react";
-import Link from "next/link";
 import React from "react";
-import prisma from "@/clients/prisma";
+import { FlameIcon, RadioIcon } from "lucide-react";
+
+import prisma from "@/lib/prisma";
+import LiveStreamItem from "./__components/live-stream-item";
+import VideoItem from "./__components/video-item";
 
 const page = async () => {
-  const liveStreams = await prisma.liveStream.findMany({});
-
   return (
     <div className="flex flex-col gap-10 p-10">
-      <div>
-        <div className="flex items-center gap-4">
-          <RadioIcon className="text-destructive" />
-          <h2 className="text-xl">Discover Live</h2>
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          {liveStreams.length <= 0 && "No creator is streaming right now!"}
-          {liveStreams.length > 0 &&
-            liveStreams.map((item) => (
-              <Link
-                className="rounded-md p-4 transition-all duration-200 hover:bg-black"
-                key={item.id}
-                href={"/live-stream/".concat(item.rtmpSecretKey)}
-              >
-                <div className="relative h-48 w-full rounded-sm bg-[url(https://random.imagecdn.app/600/400)] bg-cover">
-                  <div className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-[url(https://www.pngplay.com/wp-content/uploads/13/Google-Logo-PNG-Photo-Image.png)] bg-cover shadow-md"></div>
-                </div>
+      <LiveStreamSection />
+      <HomeFeedSection />
+    </div>
+  );
+};
 
-                <div className="mt-3 flex items-center justify-between">
-                  <p className="flex items-center gap-2 text-sm text-gray-500">
-                    <UsersRoundIcon className="text-destructive h-4 w-4" />
-                    <span>886 watching</span>
-                  </p>
-                  <p className="text-sm text-gray-500">25 minutes ago</p>
-                </div>
+const LiveStreamSection = async () => {
+  const liveStreams = await prisma.liveStream.findMany({
+    select: {
+      id: true,
+      title: true, // get user responsible from here using 1-M relation
+      createdAt: true,
+    },
+    where: {
+      isFinished: false,
+    },
+    take: 5,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-                <h3 className="mt-2">ADOBE Max 2021: Day 1 Highlights</h3>
-                <small className="flex items-center gap-2 text-base text-gray-500">
-                  Youtube <CheckIcon className="h-3 w-3 text-emerald-500" />
-                </small>
-              </Link>
-            ))}
-        </div>
+  // TODO: for now, take only 5 live streams. later figure out how to paginate these (maybe need to turn this into an API and then cursorify it)
+
+  return (
+    <div>
+      <div className="flex items-center gap-4">
+        <RadioIcon className="text-destructive" />
+        <h2 className="text-xl">Discover Live</h2>
       </div>
+      <div className="mt-4 grid w-full grid-cols-3 gap-4">
+        {liveStreams.length <= 0 && "No creator is streaming right now!"}
 
-      <div>
-        <div className="flex items-center gap-4 gap-y-6">
-          <FlameIcon className="text-destructive" />
-          <h2 className="text-xl">Trending Videos</h2>
-        </div>
-        <div className="mt-4 grid w-full grid-cols-5 gap-4">
-          {Array.from(new Array(12)).map((item) => (
-            <a
-              className="rounded-md p-2 transition-all duration-200 hover:bg-black"
-              href="/"
-              key={item}
-            >
-              <div className="relative h-48 w-full rounded-sm bg-[url(https://random.imagecdn.app/600/400)] bg-cover" />
-
-              <div className="mt-3 flex items-center justify-between">
-                <p className="flex items-center gap-2 text-sm text-gray-500">
-                  <EyeIcon className="text-destructive h-4 w-4" />
-                  <span>2.1M views</span>
-                </p>
-                <p className="text-sm text-gray-500">25 minutes ago</p>
-              </div>
-
-              <h3 className="mt-2 font-normal">
-                Young adults with physical disability find independence
-              </h3>
-              <small className="flex items-center gap-2 text-base font-normal text-gray-500">
-                Youtube <CheckIcon className="h-3 w-3 text-emerald-500" />
-              </small>
-            </a>
+        {liveStreams.length > 0 &&
+          liveStreams.map((item) => (
+            <LiveStreamItem
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              createdAt={item.createdAt}
+              user={"user"}
+            />
           ))}
-        </div>
+      </div>
+    </div>
+  );
+};
+
+const HomeFeedSection = () => {
+  return (
+    <div>
+      <div className="flex items-center gap-4 gap-y-6">
+        <FlameIcon className="text-destructive" />
+        <h2 className="text-xl">Trending Videos</h2>
+      </div>
+      <div className="mt-4 grid w-full grid-cols-5 gap-4">
+        {Array.from(new Array(12)).map((item) => (
+          <VideoItem key={Math.random()} />
+        ))}
       </div>
     </div>
   );

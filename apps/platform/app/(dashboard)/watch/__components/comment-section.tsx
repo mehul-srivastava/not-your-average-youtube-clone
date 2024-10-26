@@ -29,7 +29,7 @@ const CommentSection = () => {
         {/* DO NOT REMOVE THIS SNIPPET */}
 
         {Array.from(new Array(40)).map((item) => (
-          <Comments key={item} />
+          <Comments key={Math.random()} />
         ))}
       </div>
     </div>

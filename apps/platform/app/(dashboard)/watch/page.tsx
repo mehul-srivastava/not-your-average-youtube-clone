@@ -4,8 +4,19 @@ import VideoPlayer from "@/components/video-player";
 import RecommendVideo from "./__components/recommended-video";
 import VideoMetadata from "./__components/video-metadata";
 import CommentSection from "./__components/comment-section";
+import { redirect } from "next/navigation";
 
-const page = () => {
+interface IPageProps {
+  searchParams: {
+    v: string;
+  };
+}
+
+const page = ({ searchParams }: IPageProps) => {
+  if (!searchParams.v) redirect("/");
+
+  console.log(searchParams.v);
+
   return (
     <div className="flex gap-4 p-10">
       <div className="flex w-9/12 flex-col gap-4">
@@ -19,7 +30,7 @@ const page = () => {
       </div>
       <div className="flex w-3/12 flex-col gap-4">
         {Array.from(new Array(20)).map((item) => (
-          <RecommendVideo key={item} />
+          <RecommendVideo key={Math.random()} />
         ))}
       </div>
     </div>

@@ -15,6 +15,7 @@
     "@silvermine/videojs-quality-selector": "^1.3.1",
     "@videojs/themes": "^1.0.1",
     "axios": "^1.7.7",
+    "ioredis": "^5.4.1",
     "jb-videojs-hls-quality-selector": "^2.0.2",
     "next": "14.2.6",
     "react": "18.3.1",
