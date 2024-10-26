@@ -1,7 +1,4 @@
 import { ECSClient, RunTaskCommand } from "@aws-sdk/client-ecs";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const client = new ECSClient({
   region: "eu-north-1",
@@ -57,6 +54,7 @@ const params = {
 export const handler = async (event) => {
   try {
     const s3Notification = JSON.parse(event.Records[0].body);
+
     const videoKey = s3Notification.Records[0].s3.object.key;
     const receiptHandle = event.Records[0].receiptHandle;
 
