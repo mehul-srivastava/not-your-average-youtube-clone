@@ -35,7 +35,5 @@ const config = {
   trans: transConfig,
 };
 
-const nms = new NodeMediaServer(config);
-
-// Use run method to start our media server.
-nms.run();
+const rtmpServer = new NodeMediaServer(config);
+rtmpServer.run();
