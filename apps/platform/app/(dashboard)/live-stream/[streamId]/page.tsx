@@ -14,7 +14,7 @@ const page = async ({ params }: IPageProps) => {
       ? "https://rtmp.youtube.mehuls.in"
       : "http://localhost:7123";
 
-  const rtmpSecretKey = await prisma.liveStream.findFirst({
+  const data = await prisma.liveStream.findFirst({
     select: {
       rtmpSecretKey: true,
     },
@@ -22,6 +22,8 @@ const page = async ({ params }: IPageProps) => {
       id: params.streamId,
     },
   });
+
+  const rtmpSecretKey = data?.rtmpSecretKey;
 
   return (
     <div className="flex flex-col gap-4 p-10 lg:flex-row">

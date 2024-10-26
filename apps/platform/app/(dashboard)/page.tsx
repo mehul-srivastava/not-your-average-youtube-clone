@@ -18,7 +18,14 @@ const LiveStreamSection = async () => {
   const liveStreams = await prisma.liveStream.findMany({
     select: {
       id: true,
-      title: true, // get user responsible from here using 1-M relation
+      title: true,
+      thumbnail: true,
+      user: {
+        select: {
+          imageUrl: true,
+          name: true,
+        },
+      },
       createdAt: true,
     },
     where: {
@@ -38,7 +45,7 @@ const LiveStreamSection = async () => {
         <RadioIcon className="text-destructive" />
         <h2 className="text-xl">Discover Live</h2>
       </div>
-      <div className="mt-4 grid w-full grid-cols-3 gap-4">
+      <div className="mt-4 grid grid-cols-3 grid-rows-1 gap-4">
         {liveStreams.length <= 0 && "No creator is streaming right now!"}
 
         {liveStreams.length > 0 &&
@@ -47,8 +54,10 @@ const LiveStreamSection = async () => {
               key={item.id}
               id={item.id}
               title={item.title}
+              thumbnail={item.thumbnail}
+              userImageUrl={item.user?.imageUrl}
+              userName={item.user?.name}
               createdAt={item.createdAt}
-              user={"user"}
             />
           ))}
       </div>

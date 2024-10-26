@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,16 +24,17 @@ import {
 } from "@repo/shadcn/components/ui/form";
 import { Input } from "@repo/shadcn/components/ui/input";
 import { ClipboardCopyIcon } from "lucide-react";
-import toast from "react-hot-toast";
+import toast, { LoaderIcon } from "react-hot-toast";
 import axios from "axios";
 
 const page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
+    let stream: MediaStream;
     const startVideo = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        stream = await navigator.mediaDevices.getUserMedia({
           video: true,
         });
         if (videoRef.current) {
@@ -39,6 +46,16 @@ const page = () => {
     };
 
     startVideo();
+
+    return () => {
+      if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    };
   }, []);
 
   return (
@@ -73,7 +90,7 @@ const LiveStreamMetadata = () => {
       ? "rtmp://rtmp.youtube.mehuls.in/live"
       : "rtmp://localhost:1935/live";
 
-  const rtmpSecretKey = uuidv4().split("-").slice(0, -1).join("-").toString();
+  const rtmpSecretKey = uuidv4().split("-").slice(0, -1).join("-");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,13 +102,22 @@ const LiveStreamMetadata = () => {
     },
   });
 
+  const [isPending, startTransition] = useTransition();
+
   const rtmpUrlInputRef = useRef<HTMLInputElement | null>(null);
   const rtmpSecretKeyInputRef = useRef<HTMLInputElement | null>(null);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await axios.post("/api/live-stream", values);
-    const data = await response.data;
-    console.log(data);
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    startTransition(async () => {
+      try {
+        const response = await axios.post("/api/live-stream", values);
+        const data = await response.data;
+        toast.success("You can start streaming from OBS now!");
+      } catch (e: any) {
+        toast.error("Could not start the stream!");
+        console.log(e);
+      }
+    });
   }
 
   function copyToClipboard(
@@ -192,7 +218,13 @@ const LiveStreamMetadata = () => {
             />
           </div>
 
-          <Button type="submit" size={"sm"} className="text-xs">
+          <Button
+            disabled={isPending}
+            type="submit"
+            size={"sm"}
+            className="text-xs"
+          >
+            {isPending && <LoaderIcon className="mr-2" />}
             Start Live Stream
           </Button>
         </form>

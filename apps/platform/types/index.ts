@@ -1,7 +1,3 @@
-export interface ILiveStreamItem {
-  id: string;
-  rtmpSecretKey: string;
-  title: string;
-  description: string;
-  createdAt: Date;
-}
+import { LiveStream } from "@prisma/client";
+
+export type LiveStreamType = LiveStream;
