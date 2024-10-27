@@ -6,8 +6,18 @@ import {
   MenuIcon,
   TrendingUpIcon,
 } from "lucide-react";
+import { Button } from "@repo/shadcn/components/ui/button";
+import { auth, signOut } from "@/auth";
+import Link from "next/link";
 
-const Sidebar = () => {
+const Sidebar = async () => {
+  const session = await auth();
+
+  async function logoutFromGoogle() {
+    "use server";
+    await signOut({ redirectTo: "/?loggedOut=true" });
+  }
+
   return (
     <div className="flex h-full flex-col gap-20 overflow-y-scroll border-r-[0.5px] border-r-gray-700/70 p-4 py-5 text-white">
       <div className="mx-auto mt-0.5 h-6 w-6">
@@ -16,7 +26,9 @@ const Sidebar = () => {
 
       <ul className="flex flex-col gap-6 text-center">
         <li className="group mx-auto">
-          <HomeIcon className="h-4 w-4 cursor-pointer transition-all duration-100 group-hover:text-red-700" />
+          <Link href="/">
+            <HomeIcon className="h-4 w-4 cursor-pointer transition-all duration-100 group-hover:text-red-700" />
+          </Link>
         </li>
         <li className="group mx-auto">
           <TrendingUpIcon className="h-4 w-4 cursor-pointer transition-all duration-100 group-hover:text-red-700" />
@@ -34,9 +46,13 @@ const Sidebar = () => {
         ))}
       </ul>
 
-      <div className="mx-auto h-4 w-4 grow">
-        <LogOutIcon className="h-full w-full cursor-pointer" />
-      </div>
+      {session && (
+        <form className="group mx-auto" action={logoutFromGoogle}>
+          <Button type="submit" size={"icon"} variant={"link"}>
+            <LogOutIcon className="h-4 w-4 cursor-pointer group-hover:text-red-700" />
+          </Button>
+        </form>
+      )}
     </div>
   );
 };

@@ -26,6 +26,7 @@ import { Input } from "@repo/shadcn/components/ui/input";
 import { ClipboardCopyIcon } from "lucide-react";
 import toast, { LoaderIcon } from "react-hot-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -103,6 +104,7 @@ const LiveStreamMetadata = () => {
   });
 
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const rtmpUrlInputRef = useRef<HTMLInputElement | null>(null);
   const rtmpSecretKeyInputRef = useRef<HTMLInputElement | null>(null);
@@ -110,9 +112,9 @@ const LiveStreamMetadata = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
       try {
-        const response = await axios.post("/api/live-stream", values);
-        const data = await response.data;
+        await axios.post("/api/live-stream", values);
         toast.success("You can start streaming from OBS now!");
+        router.push("/");
       } catch (e: any) {
         toast.error("Could not start the stream!");
         console.log(e);

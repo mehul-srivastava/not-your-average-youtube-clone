@@ -1,12 +1,24 @@
 "use client";
 
+import { Button } from "@repo/shadcn/components/ui/button";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
+import toast from "react-hot-toast";
 
 const UploadButton = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const session = useSession();
+  const router = useRouter();
 
   function handleButtonClick() {
+    if (session.status === "unauthenticated") {
+      toast.error("You need to verify yourself first!");
+      router.push("/auth/identity?redirectTo=/");
+      return;
+    }
+
     fileInputRef.current?.click();
   }
 
@@ -31,7 +43,14 @@ const UploadButton = () => {
 
   return (
     <div>
-      <button onClick={handleButtonClick}>Upload</button>
+      <Button
+        onClick={handleButtonClick}
+        variant="secondary"
+        size="sm"
+        className="text-xs"
+      >
+        Upload
+      </Button>
       <input
         type="file"
         accept=".mp4"

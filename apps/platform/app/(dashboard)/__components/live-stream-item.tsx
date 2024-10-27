@@ -1,5 +1,11 @@
 import React from "react";
-import { CheckIcon, UsersRoundIcon } from "lucide-react";
+import {
+  CheckIcon,
+  CircleAlertIcon,
+  Divide,
+  ShieldQuestionIcon,
+  UsersRoundIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 import { LiveStreamType } from "@/types";
@@ -22,7 +28,7 @@ const LiveStreamItem = ({
 
   const imageB = !!userImageUrl
     ? userImageUrl
-    : "/anonymous-live-stream-profile-img.webp";
+    : "/anonymous-live-stream-profile-img.png";
 
   return (
     <Link
@@ -48,10 +54,16 @@ const LiveStreamItem = ({
         <p className="text-sm text-gray-500">{timeAgo(createdAt)}</p>
       </div>
 
-      <h3 className="mt-2">{title}</h3>
-      <small className="flex items-center gap-2 text-base text-gray-500">
-        {userName ?? "Anonymous"}
-        <CheckIcon className="h-3 w-3 text-emerald-500" />
+      <h3 className="mt-2 text-lg">{title}</h3>
+
+      {/* Creator Metadata */}
+      <small className="flex items-center gap-2 text-sm text-gray-500">
+        <p>{!userName ? "Unverified User" : userName}</p>
+        {!userName ? (
+          <CircleAlertIcon className="h-3 w-3 text-yellow-500" />
+        ) : (
+          <CheckIcon className="h-3 w-3 text-emerald-500" />
+        )}
       </small>
     </Link>
   );

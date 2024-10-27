@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import LiveStreamItem from "./__components/live-stream-item";
 import VideoItem from "./__components/video-item";
 
-const page = async () => {
+const page = () => {
   return (
     <div className="flex flex-col gap-10 p-10">
       <LiveStreamSection />

@@ -2,6 +2,7 @@ import React from "react";
 import { signIn, auth } from "@/auth";
 import { Button } from "@repo/shadcn/components/ui/button";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 interface IPageProps {
   searchParams: { redirectTo: string };
@@ -10,8 +11,12 @@ interface IPageProps {
 const page = async ({ searchParams }: IPageProps) => {
   const session = await auth();
 
-  if (!!session) {
-    console.log(session.user?.image);
+  if (session && !searchParams.redirectTo) {
+    redirect("/");
+  }
+
+  if (session && searchParams.redirectTo) {
+    redirect(searchParams.redirectTo);
   }
 
   async function loginWithGoogle() {
