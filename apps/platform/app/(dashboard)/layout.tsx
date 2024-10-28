@@ -6,6 +6,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  prisma;
   return (
     <main className="bg-brand relative min-h-screen w-full">
       {/* order should be maintained - first navbar then sidebar; padding 80px is same as sidebar width  */}

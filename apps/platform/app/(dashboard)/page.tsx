@@ -4,8 +4,13 @@ import { FlameIcon, RadioIcon } from "lucide-react";
 import prisma from "@/lib/prisma";
 import LiveStreamItem from "./__components/live-stream-item";
 import VideoItem from "./__components/video-item";
+import { redirect } from "next/navigation";
 
-const page = () => {
+const page = ({ searchParams }: { searchParams: { loggedOut: string } }) => {
+  if (searchParams.loggedOut) {
+    redirect("/");
+  }
+
   return (
     <div className="flex flex-col gap-10 p-10">
       <LiveStreamSection />
@@ -65,7 +70,24 @@ const LiveStreamSection = async () => {
   );
 };
 
-const HomeFeedSection = () => {
+const HomeFeedSection = async () => {
+  const videos = await prisma.video.findMany({
+    select: {
+      id: true,
+      title: true,
+      thumbnail: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      createdAt: true,
+    },
+    take: 10,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
   return (
     <div>
       <div className="flex items-center gap-4 gap-y-6">
@@ -73,9 +95,20 @@ const HomeFeedSection = () => {
         <h2 className="text-xl">Trending Videos</h2>
       </div>
       <div className="mt-4 grid w-full grid-cols-5 gap-4">
-        {Array.from(new Array(12)).map((item) => (
-          <VideoItem key={Math.random()} />
-        ))}
+        {videos.length <= 0 &&
+          "No video has been published as of now. You can be the first one!"}
+
+        {videos.length > 0 &&
+          videos.map((item) => (
+            <VideoItem
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              thumbnail={item.thumbnail}
+              userName={item.user?.name}
+              createdAt={item.createdAt}
+            />
+          ))}
       </div>
     </div>
   );

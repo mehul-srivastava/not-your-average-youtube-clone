@@ -11,14 +11,7 @@ const Navbar = async () => {
   return (
     <nav className="flex h-full w-full items-center justify-between border-b border-b-gray-700/70 px-5 text-white">
       <Link href="/" className="flex items-center gap-4">
-        <Image
-          src="/logo.png"
-          width={32}
-          height={32}
-          className="block h-8 w-8 cursor-pointer"
-          alt="youtube clone logo"
-        />
-        {!session && <small>Unverified</small>}
+        {!session && <small>Login</small>}
       </Link>
 
       <div className="flex items-center gap-4">
@@ -27,12 +20,12 @@ const Navbar = async () => {
             Start Live
           </Button>
         </Link>
-        <UploadButton />
+        <UploadButton isLoggedIn={!!session} />
         {!!session && (
           <Image
             width={36}
             height={36}
-            src="https://lh3.googleusercontent.com/a/ACg8ocKYqW-Ay5b3ez8Ylf3iQ7dFH6MjO30RAioPFLrXl6kZcgPuDUBn=s96-c"
+            src={session.user?.image!}
             className="h-9 w-9 rounded-md"
             alt="user image"
           />

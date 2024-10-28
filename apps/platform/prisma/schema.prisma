@@ -36,7 +36,7 @@ model Video {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   comments     Comment[]
-  ratings      Rating[]
+  ratings      Rating?
 
   userId String
   user   User   @relation(references: [id], fields: [userId])
@@ -59,7 +59,7 @@ model Rating {
   dislikes Int @default(0)
 
   userId  String
-  videoId String
+  videoId String @unique
   video   Video  @relation(references: [id], fields: [videoId])
   user    User   @relation(references: [id], fields: [userId])
 }

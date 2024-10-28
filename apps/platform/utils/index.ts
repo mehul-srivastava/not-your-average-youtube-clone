@@ -17,3 +17,23 @@ export function timeAgo(startDate: Date) {
     return `${days} day${days !== 1 ? "s" : ""} ago`;
   }
 }
+
+export function displaySubsCount(count: number) {
+  if (count < 1_000) {
+    return count.toString();
+  } else if (count < 1_000_000) {
+    return (count / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+  } else {
+    return (count / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+}
+
+export function displayCommentsCount(count: number) {
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "decimal",
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+  });
+
+  return formatter.format(count);
+}

@@ -52,6 +52,12 @@ const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
     if (player) player.hlsQualitySelector({ displayCurrentQuality: true });
   }, [player]);
 
+  useEffect(() => {
+    if (player && poster) {
+      player.poster(poster);
+    }
+  }, [player, poster]);
+
   return (
     <div data-vjs-player>
       <video
