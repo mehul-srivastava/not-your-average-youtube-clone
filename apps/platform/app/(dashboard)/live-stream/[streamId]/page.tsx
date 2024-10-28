@@ -1,7 +1,7 @@
 import React from "react";
 
 import prisma from "@/lib/prisma";
-import VideoPlayer from "@/components/video-player";
+import VideoPlayer from "@/components/video-player-old";
 import LiveChat from "./__components/live-chat";
 import Image from "next/image";
 import { CheckIcon, CircleAlertIcon } from "lucide-react";

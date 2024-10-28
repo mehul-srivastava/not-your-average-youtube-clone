@@ -16,7 +16,6 @@ body {
   min-width: 100%;
 }
 
-/* 
 .vjs-live-icon {
   background: red !important;
   width: min-content !important;
@@ -29,5 +28,8 @@ body {
 
 .vjs-playback-rate {
   font-size: 6px;
-}  
-*/
+}
+
+.video-js {
+  min-height: 600px;
+}

@@ -52,8 +52,7 @@ const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
         }
       }
 
-      // Add quality selector if it's live
-      if (isLive) {
+      if (!isLive) {
         // @ts-ignore
         player.hlsQualitySelector({ displayCurrentQuality: true });
       }

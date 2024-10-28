@@ -1,6 +1,6 @@
 import React from "react";
 
-import VideoPlayer from "@/components/video-player";
+import VideoPlayer from "@/components/video-player-old";
 import RecommendVideoItem from "./__components/recommended-video-item";
 import VideoMetadata from "./__components/video-metadata";
 import CommentSection from "./__components/comment-section";
