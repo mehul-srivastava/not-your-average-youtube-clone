@@ -7,10 +7,14 @@ import { signIn, auth } from "@/auth";
 import prisma from "@/lib/prisma";
 
 interface IPageProps {
-  searchParams: { redirectTo: string; signedIn?: string };
+  searchParams: { redirectTo: string; signedIn?: string; error?: string };
 }
 
 const page = async ({ searchParams }: IPageProps) => {
+  if (searchParams.error) {
+    redirect("/auth/identity?redirectTo=/");
+  }
+
   if (!searchParams.redirectTo) {
     redirect("/");
   }

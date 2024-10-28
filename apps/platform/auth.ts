@@ -3,6 +3,10 @@ import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
+  pages: {
+    signIn: "/auth/identity",
+    error: "/auth/identity",
+  },
   callbacks: {
     jwt({ token, account }) {
       if (account) token.user_id = account.providerAccountId;
