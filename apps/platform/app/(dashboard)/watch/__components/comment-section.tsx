@@ -45,6 +45,7 @@ const CommentSection = async ({ videoId }: { videoId: string }) => {
       </h3>
       <div className="mt-2">
         <InputCommentItem
+          videoId={videoId}
           userId={session?.user?.id!}
           userImage={session?.user?.image!}
         />

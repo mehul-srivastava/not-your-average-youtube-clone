@@ -1,14 +1,9 @@
-import { addSubscriptionAction } from "@/app/actions/subscribe-to-user";
 import { auth } from "@/auth";
 import { VideoType } from "@/types";
 import { displaySubsCount } from "@/utils";
-import { Button } from "@repo/shadcn/components/ui/button";
-import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
-import { Session } from "next-auth";
-import Link from "next/link";
-import { redirect } from "next/navigation";
 import React from "react";
 import SubscribeButton from "./subscribe-button";
+import LikeDislikeButton from "./like-dislike-button";
 
 type IVideoMetadata = Omit<
   VideoType,
@@ -48,6 +43,7 @@ const VideoMetadata = async ({
         </div>
         <div className="flex items-center justify-start gap-2">
           <LikeDislikeButton
+            videoId={id}
             likeCount={likeCount || 0}
             dislikeCount={dislikeCount || 0}
           />
@@ -75,33 +71,6 @@ const VideoMetadata = async ({
         {/* 300 chars only allowed */}
         {description}
       </p>
-    </div>
-  );
-};
-
-const LikeDislikeButton = ({
-  likeCount,
-  dislikeCount,
-}: {
-  likeCount: number;
-  dislikeCount: number;
-}) => {
-  return (
-    <div className="flex w-full max-w-xs items-center justify-between shadow-md">
-      <Button
-        className="flex items-center rounded-none rounded-l-md border-r border-gray-300"
-        size={"sm"}
-      >
-        <ThumbsUpIcon className="h-4 w-4" />
-        <span className="ml-2">{likeCount}</span>
-      </Button>
-      <Button
-        className="flex items-center rounded-none rounded-r-md"
-        size={"sm"}
-      >
-        <ThumbsDownIcon className="h-4 w-4" />
-        <span className="ml-2">{dislikeCount}</span>
-      </Button>
     </div>
   );
 };

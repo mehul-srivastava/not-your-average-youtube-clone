@@ -1,11 +1,9 @@
 # Improvements
+- CLEANUP CODE + ONLY GET REQUESTS ON API, REST SHOULD BE SERVER ACTIONS (server components doing directly, client using react query)
 - fetch comments using scroll loading + same way for recommended videos
-- cannot comment, cannot like/dislike, cannot subscribe (redirect to login)
-- comment feature
+- actual comment feature (no kafka processing)
 - like/dislike feature no batch processing but do set the condition for 300, after that comment todo kafka
-- CLEANUP CODE, DECIDE APIS, TYPES, ACTIONS, EVERYTHING.
-
-
+- WATCH FEATURE COMPLETE POLISHING
 
 
 ### Later
