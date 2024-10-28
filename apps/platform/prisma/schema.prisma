@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       String @id
   name     String
   email    String
   imageUrl String
@@ -38,8 +38,8 @@ model Video {
   comments     Comment[]
   ratings      Rating[]
 
-  userId Int
-  user   User @relation(references: [id], fields: [userId])
+  userId String
+  user   User   @relation(references: [id], fields: [userId])
 }
 
 model Comment {
@@ -47,7 +47,7 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
 
-  userId  Int
+  userId  String
   videoId String
   video   Video  @relation(references: [id], fields: [videoId])
   user    User   @relation(references: [id], fields: [userId])
@@ -58,7 +58,7 @@ model Rating {
   likes    Int @default(0)
   dislikes Int @default(0)
 
-  userId  Int
+  userId  String
   videoId String
   video   Video  @relation(references: [id], fields: [videoId])
   user    User   @relation(references: [id], fields: [userId])
@@ -73,6 +73,6 @@ model LiveStream {
   isFinished    Boolean  @default(false)
   createdAt     DateTime @default(now())
 
-  userId Int?
-  user   User? @relation(references: [id], fields: [userId])
+  userId String?
+  user   User?   @relation(references: [id], fields: [userId])
 }
