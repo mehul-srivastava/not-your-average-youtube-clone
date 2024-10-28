@@ -3,6 +3,20 @@ body {
   height: 100%;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+}
+
+.media-controller {
+  min-width: 100%;
+}
+
+/* 
 .vjs-live-icon {
   background: red !important;
   width: min-content !important;
@@ -13,15 +27,7 @@ body {
   margin-right: 5px !important;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
-  scrollbar-width: none; /* For Firefox */
-}
-
 .vjs-playback-rate {
   font-size: 6px;
-}
+}  
+*/

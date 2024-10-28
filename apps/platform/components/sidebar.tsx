@@ -24,13 +24,15 @@ const Sidebar = async () => {
 
   return (
     <div className="bg-brand flex h-full flex-col gap-20 overflow-y-scroll border-r-[0.5px] border-r-gray-700/70 p-4 py-5 text-white">
-      <Image
-        src="/logo.png"
-        width={32}
-        height={32}
-        className="mx-auto block h-6 w-6 cursor-pointer"
-        alt="youtube clone logo"
-      />
+      <Link href="/">
+        <Image
+          src="/logo.png"
+          width={32}
+          height={32}
+          className="mx-auto block h-6 w-6 cursor-pointer"
+          alt="youtube clone logo"
+        />
+      </Link>
 
       <ul className="flex flex-col gap-6 text-center">
         <li className="group mx-auto cursor-pointer">
