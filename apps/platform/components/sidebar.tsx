@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@repo/shadcn/components/ui/button";
 import { auth, signOut } from "@/auth";
 import { ApiGetSubscriptions } from "@/types";
+import { headers } from "next/headers";
 
 const Sidebar = async () => {
   const session = await auth();
@@ -19,6 +20,7 @@ const Sidebar = async () => {
     next: {
       tags: ["subscriptions"],
     },
+    headers: headers(),
   });
   const response = await data.json();
 

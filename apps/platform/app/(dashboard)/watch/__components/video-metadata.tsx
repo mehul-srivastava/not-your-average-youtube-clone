@@ -8,6 +8,7 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
+import SubscribeButton from "./subscribe-button";
 
 type IVideoMetadata = Omit<
   VideoType,
@@ -50,7 +51,7 @@ const VideoMetadata = async ({
             likeCount={likeCount || 0}
             dislikeCount={dislikeCount || 0}
           />
-          <SubscribeButton userId={userId} videoId={id} session={session} />
+          <SubscribeButton userId={userId} videoId={id} />
         </div>
       </div>
 
@@ -75,31 +76,6 @@ const VideoMetadata = async ({
         {description}
       </p>
     </div>
-  );
-};
-
-const SubscribeButton = ({
-  userId,
-  videoId,
-  session,
-}: {
-  userId: string;
-  videoId: string;
-  session: Session | null;
-}) => {
-  async function subscribeToUser() {
-    "use server";
-    return;
-    // START FROM HERE
-    await addSubscriptionAction(userId);
-  }
-
-  return (
-    <form action={subscribeToUser}>
-      <Button size={"sm"} variant={"destructive"}>
-        Subscribe
-      </Button>
-    </form>
   );
 };
 
