@@ -1,12 +1,11 @@
 import React from "react";
-
-import VideoPlayer from "@/components/video-player-old";
-import RecommendVideoItem from "./__components/recommended-video-item";
-import VideoMetadata from "./__components/video-metadata";
-import CommentSection from "./__components/comment-section";
 import { redirect } from "next/navigation";
 
 import prisma from "@/lib/prisma";
+import VideoPlayer from "@/components/video-player-old";
+import VideoMetadata from "./__components/video-section/metadata";
+import Comments from "./__components/comment-section/comments";
+import Recommendations from "./__components/recommendation-section/recommendations";
 
 interface IPageProps {
   searchParams: {
@@ -53,39 +52,22 @@ const page = async ({ searchParams }: IPageProps) => {
 
   if (!video) redirect("/");
 
-  const likeCount = video.ratings.filter(
-    (rating) => rating.choice === "LIKE",
-  ).length;
-  const dislikeCount = video.ratings.filter(
-    (rating) => rating.choice === "DISLIKE",
-  ).length;
-
-  const otherVideos = await prisma.video.findMany({
-    where: {
-      id: {
-        not: searchParams.v,
-      },
+  const { likeCount, dislikeCount } = video.ratings.reduce(
+    (state, curr) => {
+      if (curr.choice === "LIKE") ++state.likeCount;
+      if (curr.choice === "DISLIKE") ++state.dislikeCount;
+      return state;
     },
-    select: {
-      id: true,
-      title: true,
-      thumbnail: true,
-      createdAt: true,
-      user: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
+    { likeCount: 0, dislikeCount: 0 },
+  );
 
   return (
     <div className="flex gap-4 p-10">
       <div className="flex w-9/12 flex-col gap-4">
         <VideoPlayer
-          m3u8Url={video?.manifestFile!}
+          m3u8Url={video.manifestFile}
           isLive={false}
-          poster={video?.thumbnail!}
+          poster={video.thumbnail ?? ""}
         />
         <VideoMetadata
           id={video.id}
@@ -99,19 +81,10 @@ const page = async ({ searchParams }: IPageProps) => {
           likeCount={likeCount}
           dislikeCount={dislikeCount}
         />
-        <CommentSection videoId={video?.id!} />
+        <Comments videoId={video.id} />
       </div>
       <div className="flex w-3/12 flex-col gap-4">
-        {otherVideos.map((item) => (
-          <RecommendVideoItem
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            thumbnail={item.thumbnail}
-            userName={item.user.name}
-            createdAt={item.createdAt}
-          />
-        ))}
+        <Recommendations searchParams={searchParams} />
       </div>
     </div>
   );

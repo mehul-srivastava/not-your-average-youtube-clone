@@ -26,7 +26,6 @@ const CommentItem = ({
             {timeAgo(new Date(createdAt))}
           </small>
         </h5>
-
         <p className="text-sm font-thin" style={{ fontFamily: "sans-serif" }}>
           {content}
         </p>

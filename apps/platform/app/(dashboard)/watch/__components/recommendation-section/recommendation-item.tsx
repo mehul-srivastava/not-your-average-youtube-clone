@@ -1,21 +1,30 @@
 import React from "react";
 import Link from "next/link";
 
+import redis from "@/lib/redis";
 import { VideoType } from "@/types";
-import { formatTitle, timeAgo } from "@/utils";
+import {
+  displayStandardCount,
+  formatTitle,
+  pluralOrSingular,
+  timeAgo,
+} from "@/utils";
 
 type IRecommendVideoItem = Omit<
   VideoType,
   "description" | "manifestFile" | "updatedAt" | "userId"
 > & { userName: string };
 
-const RecommendVideoItem = ({
+const RecommendVideoItem = async ({
   id,
   title,
   thumbnail,
   createdAt,
   userName,
 }: IRecommendVideoItem) => {
+  const key = "video:".concat(id);
+  const views = parseInt((await redis.get(key))!);
+
   return (
     <Link href={"/watch?v=".concat(id)} className="cursor-pointer">
       <div className="flex w-full cursor-pointer gap-2 rounded-md p-1 transition-all duration-200 hover:bg-slate-900">
@@ -29,8 +38,8 @@ const RecommendVideoItem = ({
             <p className="mt-1 text-sm text-gray-400">{userName}</p>
           </div>
           <small className="text-gray-500">
-            1023 views • {timeAgo(createdAt)}{" "}
-            {/* TODO: fetch views from redis */}
+            {displayStandardCount(views)} {pluralOrSingular("view", views)} •{" "}
+            {timeAgo(createdAt)}
           </small>
         </div>
       </div>
