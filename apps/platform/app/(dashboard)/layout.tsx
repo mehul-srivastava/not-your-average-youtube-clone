@@ -10,7 +10,7 @@ export default function RootLayout({
   return (
     <main className="bg-brand relative min-h-screen w-full">
       {/* pl = sidebar width  */}
-      <div className="bg-brand fixed inset-0 h-[70px] w-full pl-[80px]">
+      <div className="bg-brand fixed inset-0 z-30 h-[70px] w-full pl-[80px]">
         <Navbar />
       </div>
       {/* sidebar should come after navbar */}
