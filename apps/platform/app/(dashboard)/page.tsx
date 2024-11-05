@@ -4,13 +4,8 @@ import { FlameIcon, RadioIcon } from "lucide-react";
 import prisma from "@/lib/prisma";
 import LiveStreamItem from "./__components/live-stream-item";
 import VideoItem from "./__components/video-item";
-import { redirect } from "next/navigation";
 
-const page = ({ searchParams }: { searchParams: { loggedOut: string } }) => {
-  if (searchParams.loggedOut) {
-    redirect("/");
-  }
-
+const page = () => {
   return (
     <div className="flex flex-col gap-10 p-10">
       <LiveStreamSection />
@@ -36,13 +31,11 @@ const LiveStreamSection = async () => {
     where: {
       isFinished: false,
     },
-    take: 5,
+    take: 3,
     orderBy: {
       createdAt: "desc",
     },
   });
-
-  // TODO: for now, take only 5 live streams. later figure out how to paginate these (maybe need to turn this into an API and then cursorify it)
 
   return (
     <div>
@@ -92,7 +85,7 @@ const HomeFeedSection = async () => {
     <div>
       <div className="flex items-center gap-4 gap-y-6">
         <FlameIcon className="text-destructive" />
-        <h2 className="text-xl">Trending Videos</h2>
+        <h2 className="text-xl">Explore Videos</h2>
       </div>
       <div className="mt-4 grid w-full grid-cols-5 gap-4">
         {videos.length <= 0 &&

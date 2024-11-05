@@ -1,22 +1,31 @@
 import React from "react";
-import Link from "next/link";
 import { CheckIcon, EyeIcon } from "lucide-react";
+import Link from "next/link";
 
+import redis from "@/lib/redis";
 import { VideoType } from "@/types";
-import { formatTitle, timeAgo } from "@/utils";
+import {
+  displayStandardCount,
+  formatTitle,
+  pluralOrSingular,
+  timeAgo,
+} from "@/utils";
 
 type IVideoItem = Omit<
   VideoType,
   "description" | "manifestFile" | "userId" | "updatedAt"
 > & { userName: string };
 
-const VideoItem = ({
+const VideoItem = async ({
   id,
   title,
   thumbnail,
   userName,
   createdAt,
 }: IVideoItem) => {
+  const key = "video:".concat(id);
+  const views = parseInt((await redis.get(key))!);
+
   return (
     <Link
       className="rounded-md p-2 transition-all duration-200 hover:bg-black"
@@ -30,7 +39,9 @@ const VideoItem = ({
       <div className="mt-3 flex items-center justify-between">
         <p className="flex items-center gap-2 text-sm text-gray-500">
           <EyeIcon className="text-destructive h-4 w-4" />
-          <span>2.1M views</span> {/* TODO: fetch from redis here */}
+          <span>
+            {displayStandardCount(views)} {pluralOrSingular("view", views)}
+          </span>
         </p>
         <p className="text-sm text-gray-500">{timeAgo(createdAt)}</p>
       </div>

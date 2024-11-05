@@ -1,22 +1,17 @@
 import React from "react";
-import {
-  CheckIcon,
-  CircleAlertIcon,
-  Divide,
-  ShieldQuestionIcon,
-  UsersRoundIcon,
-} from "lucide-react";
 import Link from "next/link";
+import { CheckIcon, CircleAlertIcon, UsersRoundIcon } from "lucide-react";
 
+import redis from "@/lib/redis";
 import { LiveStreamType } from "@/types";
-import { timeAgo } from "@/utils";
+import { displayStandardCount, timeAgo } from "@/utils";
 
 type ILiveStreamItem = Omit<
   LiveStreamType,
   "rtmpSecretKey" | "description" | "isFinished" | "userId"
 > & { userImageUrl: string | undefined; userName: string | undefined };
 
-const LiveStreamItem = ({
+const LiveStreamItem = async ({
   id,
   title,
   thumbnail,
@@ -24,32 +19,38 @@ const LiveStreamItem = ({
   userImageUrl,
   userName,
 }: ILiveStreamItem) => {
-  const imageA = !!thumbnail ? thumbnail : "/live-stream-default-thumbnail.jpg";
+  const thumbnailImage = !!thumbnail
+    ? thumbnail
+    : "/live-stream-default-thumbnail.jpg"; // Can use getRandomLiveStreamPlaceholder() here
 
-  const imageB = !!userImageUrl
+  const userImage = !!userImageUrl
     ? userImageUrl
     : "/anonymous-live-stream-profile-img.png";
 
+  const key = "live:".concat(id);
+  const watching = parseInt((await redis.get(key))!);
+
   return (
     <Link
-      className="rounded-md p-4 transition-all duration-200 hover:bg-black"
+      className="rounded-md p-2 transition-all duration-200 hover:bg-black"
       href={"/live-stream/".concat(id)}
     >
+      {/* User and Thumbnail Images */}
       <div
         className="relative h-48 w-full rounded-sm bg-cover bg-bottom"
-        style={{ backgroundImage: `url(${imageA})` }}
+        style={{ backgroundImage: `url(${thumbnailImage})` }}
       >
         <div
           className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-cover shadow-md"
-          style={{ backgroundImage: `url(${imageB})` }}
+          style={{ backgroundImage: `url(${userImage})` }}
         ></div>
       </div>
 
+      {/* Stream Metadata */}
       <div className="mt-3 flex items-center justify-between">
         <p className="flex items-center gap-2 text-sm text-gray-500">
           <UsersRoundIcon className="text-destructive h-4 w-4" />
-          <span>886 watching</span>
-          {/* TODO: fix this using redis */}
+          <span>{displayStandardCount(watching)} watching</span>
         </p>
         <p className="text-sm text-gray-500">{timeAgo(createdAt)}</p>
       </div>
