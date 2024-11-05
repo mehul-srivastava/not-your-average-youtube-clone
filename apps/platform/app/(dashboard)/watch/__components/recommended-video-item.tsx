@@ -1,7 +1,8 @@
-import { VideoType } from "@/types";
-import { timeAgo } from "@/utils";
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+
+import { VideoType } from "@/types";
+import { formatTitle, timeAgo } from "@/utils";
 
 type IRecommendVideoItem = Omit<
   VideoType,
@@ -24,7 +25,7 @@ const RecommendVideoItem = ({
         />
         <div className="flex h-full flex-col justify-between">
           <div>
-            <h3 className="text-base leading-tight">{title}</h3>
+            <h3 className="text-base leading-tight">{formatTitle(title)}</h3>
             <p className="mt-1 text-sm text-gray-400">{userName}</p>
           </div>
           <small className="text-gray-500">

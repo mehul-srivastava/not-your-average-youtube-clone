@@ -1,9 +1,9 @@
 import React from "react";
-import { CheckIcon, EyeIcon, FlameIcon } from "lucide-react";
+import Link from "next/link";
+import { CheckIcon, EyeIcon } from "lucide-react";
 
 import { VideoType } from "@/types";
-import { timeAgo } from "@/utils";
-import Link from "next/link";
+import { formatTitle, timeAgo } from "@/utils";
 
 type IVideoItem = Omit<
   VideoType,
@@ -35,7 +35,7 @@ const VideoItem = ({
         <p className="text-sm text-gray-500">{timeAgo(createdAt)}</p>
       </div>
 
-      <h3 className="mt-2 font-normal">{title}</h3>
+      <h3 className="mt-2 font-normal">{formatTitle(title)}</h3>
       <small className="flex items-center gap-2 text-base font-normal text-gray-500">
         {userName} <CheckIcon className="h-3 w-3 text-emerald-500" />
       </small>

@@ -10,7 +10,10 @@ const Navbar = async () => {
 
   return (
     <nav className="flex h-full w-full items-center justify-between border-b border-b-gray-700/70 px-5 text-white">
-      <Link href="/" className="flex items-center gap-4">
+      <Link
+        href="/auth/identity?redirectTo=/"
+        className="flex items-center gap-4"
+      >
         {!session && <small>Login</small>}
       </Link>
 

@@ -37,3 +37,7 @@ export function displayCommentsCount(count: number) {
 
   return formatter.format(count);
 }
+
+export function formatTitle(title: string) {
+  return title.slice(0, 60) + (title.length > 60 ? "..." : "");
+}

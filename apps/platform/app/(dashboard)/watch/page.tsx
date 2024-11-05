@@ -28,12 +28,6 @@ const page = async ({ searchParams }: IPageProps) => {
       description: true,
       thumbnail: true,
       createdAt: true,
-      ratings: {
-        select: {
-          likes: true,
-          dislikes: true,
-        },
-      },
       user: {
         select: {
           id: true,
@@ -46,8 +40,25 @@ const page = async ({ searchParams }: IPageProps) => {
           },
         },
       },
+      ratings: {
+        select: {
+          choice: true,
+        },
+        where: {
+          OR: [{ choice: "LIKE" }, { choice: "DISLIKE" }],
+        },
+      },
     },
   });
+
+  if (!video) redirect("/");
+
+  const likeCount = video.ratings.filter(
+    (rating) => rating.choice === "LIKE",
+  ).length;
+  const dislikeCount = video.ratings.filter(
+    (rating) => rating.choice === "DISLIKE",
+  ).length;
 
   const otherVideos = await prisma.video.findMany({
     where: {
@@ -77,16 +88,16 @@ const page = async ({ searchParams }: IPageProps) => {
           poster={video?.thumbnail!}
         />
         <VideoMetadata
-          id={video?.id!}
-          title={video?.title!}
-          description={video?.description!}
-          userId={video?.user.id!}
-          userName={video?.user.name!}
-          userImage={video?.user.imageUrl!}
-          createdAt={video?.createdAt!}
-          subscribersCount={video?.user._count.subscribers!}
-          likeCount={video?.ratings?.likes!}
-          dislikeCount={video?.ratings?.dislikes!}
+          id={video.id}
+          title={video.title}
+          description={video.description}
+          userId={video.user.id}
+          userName={video.user.name}
+          userImage={video.user.imageUrl}
+          createdAt={video.createdAt}
+          subscribersCount={video.user._count.subscribers}
+          likeCount={likeCount}
+          dislikeCount={dislikeCount}
         />
         <CommentSection videoId={video?.id!} />
       </div>

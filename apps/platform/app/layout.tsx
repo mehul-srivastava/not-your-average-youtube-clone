@@ -5,6 +5,7 @@ import "./globals.css";
 import "@repo/shadcn/globals.css";
 import NextAuthSessionProvider from "@/components/providers/nextauth-session-provider";
 import ToastProvider from "@/components/providers/toast-provider";
+import GlobalTooltipProvider from "@/components/providers/tooltip-provider";
 
 const balooPaaji2 = Baloo_Paaji_2({
   weight: ["400", "500", "600", "700", "800"],
@@ -26,7 +27,7 @@ export default function RootLayout({
       <body className={balooPaaji2.className}>
         <NextAuthSessionProvider>
           <ToastProvider />
-          {children}
+          <GlobalTooltipProvider>{children}</GlobalTooltipProvider>
         </NextAuthSessionProvider>
       </body>
     </html>

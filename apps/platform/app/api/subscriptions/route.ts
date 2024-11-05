@@ -19,6 +19,7 @@ export const GET = auth(async function GET(req) {
         select: {
           id: true,
           imageUrl: true,
+          name: true,
         },
         take: 7,
       },
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
   const { userId } = await request.json();
 
   if (session.user.id === userId) {
-    return { success: false, user: "same " };
+    return NextResponse.json({ success: false, user: "same " });
   }
 
   await prisma.user.update({

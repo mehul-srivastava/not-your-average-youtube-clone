@@ -1,7 +1,8 @@
+import React from "react";
+
 import { auth } from "@/auth";
 import { VideoType } from "@/types";
 import { displaySubsCount } from "@/utils";
-import React from "react";
 import SubscribeButton from "./subscribe-button";
 import LikeDislikeButton from "./like-dislike-button";
 
@@ -41,13 +42,15 @@ const VideoMetadata = async ({
           <p className="text-xl font-normal text-gray-500">604,929,123 views</p>{" "}
           {/* TODO: fetch from redis */}
         </div>
-        <div className="flex items-center justify-start gap-2">
-          <LikeDislikeButton
-            videoId={id}
-            likeCount={likeCount || 0}
-            dislikeCount={dislikeCount || 0}
-          />
-          <SubscribeButton userId={userId} videoId={id} />
+        <div>
+          <div className="flex items-center justify-end gap-2">
+            <LikeDislikeButton
+              videoId={id}
+              likeCount={likeCount}
+              dislikeCount={dislikeCount}
+            />
+            <SubscribeButton userId={userId} videoId={id} />
+          </div>
         </div>
       </div>
 
@@ -55,7 +58,7 @@ const VideoMetadata = async ({
       <div className="mt-6 flex items-center gap-2">
         <div
           className="h-10 w-10 rounded-full bg-cover"
-          style={{ backgroundImage: `url(${userImage})` }}
+          style={{ backgroundImage: `url("${userImage}")` }}
         ></div>
         <div>
           <h3 className="text-lg">

@@ -36,7 +36,7 @@ model Video {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   comments     Comment[]
-  ratings      Rating?
+  ratings      Rating[]
 
   userId String
   user   User   @relation(references: [id], fields: [userId])
@@ -54,14 +54,14 @@ model Comment {
 }
 
 model Rating {
-  id       Int @id @default(autoincrement())
-  likes    Int @default(0)
-  dislikes Int @default(0)
+  choice Choice @default(DISLIKE) // enum `Choice` declared at end
 
   userId  String
-  videoId String @unique
+  videoId String
   video   Video  @relation(references: [id], fields: [videoId])
   user    User   @relation(references: [id], fields: [userId])
+
+  @@id([userId, videoId])
 }
 
 model LiveStream {
@@ -75,4 +75,10 @@ model LiveStream {
 
   userId String?
   user   User?   @relation(references: [id], fields: [userId])
+}
+
+enum Choice {
+  DISLIKE // Corresponds to -1
+  NEUTRAL // Corresponds to 0
+  LIKE // Corresponds to 1
 }

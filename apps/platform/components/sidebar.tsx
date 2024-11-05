@@ -5,8 +5,13 @@ import Link from "next/link";
 
 import { Button } from "@repo/shadcn/components/ui/button";
 import { auth, signOut } from "@/auth";
-import { ApiGetSubscriptions } from "@/types";
 import { headers } from "next/headers";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@repo/shadcn/components/ui/tooltip";
 
 const Sidebar = async () => {
   const session = await auth();
@@ -51,15 +56,19 @@ const Sidebar = async () => {
       </ul>
 
       <ul className="flex h-full flex-col gap-4 overflow-auto text-center">
-        {response &&
-          response.data.map((item: any) => (
-            <li key={item.id}>
+        {response.data.map((item: any) => (
+          <Tooltip key={item.id}>
+            <TooltipTrigger>
               <div
                 className="mx-auto h-5 w-5 rounded-full bg-cover"
-                style={{ backgroundImage: `url(${item.imageUrl})` }}
-              ></div>
-            </li>
-          ))}
+                style={{ backgroundImage: `url("${item.imageUrl}")` }}
+              />
+            </TooltipTrigger>
+            <TooltipContent side="right" className="p-1 px-2 text-xs">
+              <p>{item.name}</p>
+            </TooltipContent>
+          </Tooltip>
+        ))}
       </ul>
 
       {session && (
