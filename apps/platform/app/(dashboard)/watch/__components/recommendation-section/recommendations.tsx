@@ -3,11 +3,11 @@ import React from "react";
 import prisma from "@/lib/prisma";
 import RecommendVideoItem from "./recommendation-item";
 
-const Recommendations = async ({
-  searchParams,
-}: {
+interface IComponentProps {
   searchParams: { v: string };
-}) => {
+}
+
+const Recommendations = async ({ searchParams }: IComponentProps) => {
   const otherVideos = await prisma.video.findMany({
     where: {
       id: {

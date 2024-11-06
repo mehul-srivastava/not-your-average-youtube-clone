@@ -7,7 +7,11 @@ import { displayLongCount, pluralOrSingular } from "@/utils";
 import CommentInputField from "./comment-input-field";
 import CommentItem from "./comment-item";
 
-const Comments = async ({ videoId }: { videoId: string }) => {
+interface IComponentProps {
+  videoId: string;
+}
+
+const Comments = async ({ videoId }: IComponentProps) => {
   const session = await auth();
 
   const data = await prisma.video.findFirst({

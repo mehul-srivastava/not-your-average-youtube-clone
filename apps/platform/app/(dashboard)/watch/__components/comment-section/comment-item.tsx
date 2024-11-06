@@ -2,7 +2,7 @@ import { CommentType } from "@/types";
 import { timeAgo } from "@/utils";
 import React from "react";
 
-type ICommentItem = Omit<CommentType, "videoId" | "userId" | "id"> & {
+type IComponentProps = Omit<CommentType, "videoId" | "userId" | "id"> & {
   userImage: string;
   userName: string;
 };
@@ -12,7 +12,7 @@ const CommentItem = ({
   userName,
   content,
   createdAt,
-}: ICommentItem) => {
+}: IComponentProps) => {
   return (
     <div className="flex items-center gap-4">
       <div

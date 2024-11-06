@@ -3,27 +3,28 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import { Button } from "@repo/shadcn/components/ui/button";
 import { Input } from "@repo/shadcn/components/ui/input";
 
-const CommentInputField = ({
-  userImage,
-  videoId,
-}: {
+interface IComponentProps {
   userImage: string;
   videoId: string;
-}) => {
+}
+
+const CommentInputField = ({ userImage, videoId }: IComponentProps) => {
   const session = useSession();
   const router = useRouter();
 
   const localStorageCommentKey = "comment:".concat(videoId);
+  const initialValue =
+    typeof window !== "undefined"
+      ? localStorage.getItem(localStorageCommentKey) || ""
+      : "";
 
-  const [inputComment, setInputComment] = useState(
-    localStorage.getItem(localStorageCommentKey) || "",
-  );
+  const [inputComment, setInputComment] = useState(initialValue);
 
   async function handleClick() {
     if (session.status === "unauthenticated") {

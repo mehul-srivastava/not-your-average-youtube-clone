@@ -38,11 +38,15 @@ export async function POST(request: NextRequest) {
     throw new Error("Unauthorized");
   }
 
-  const { userId } = await request.json();
+  const { userId, alreadySubscribed } = await request.json();
 
   if (session.user.id === userId) {
-    return NextResponse.json({ success: false, user: "same " });
+    return NextResponse.json({ done: false });
   }
+
+  const obj = {
+    id: userId,
+  };
 
   await prisma.user.update({
     where: {
@@ -50,13 +54,12 @@ export async function POST(request: NextRequest) {
     },
     data: {
       subscriptions: {
-        connect: {
-          id: userId,
-        },
+        disconnect: alreadySubscribed ? obj : undefined,
+        connect: alreadySubscribed ? undefined : obj,
       },
     },
   });
 
   revalidateTag("subscriptions");
-  return NextResponse.json({ done: true });
+  return NextResponse.json({ done: true, subscribed: !alreadySubscribed });
 }

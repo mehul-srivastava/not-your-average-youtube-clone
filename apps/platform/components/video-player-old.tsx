@@ -12,7 +12,7 @@ import { useSearchParams } from "next/navigation";
 interface IVideoPlayerProps {
   isLive: boolean;
   m3u8Url: string;
-  poster?: string;
+  poster: string;
 }
 
 const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {

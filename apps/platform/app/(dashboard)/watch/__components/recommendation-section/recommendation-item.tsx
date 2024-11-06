@@ -10,7 +10,7 @@ import {
   timeAgo,
 } from "@/utils";
 
-type IRecommendVideoItem = Omit<
+type IComponentProps = Omit<
   VideoType,
   "description" | "manifestFile" | "updatedAt" | "userId"
 > & { userName: string };
@@ -21,7 +21,7 @@ const RecommendVideoItem = async ({
   thumbnail,
   createdAt,
   userName,
-}: IRecommendVideoItem) => {
+}: IComponentProps) => {
   const key = "video:".concat(id);
   const views = parseInt((await redis.get(key))!);
 
