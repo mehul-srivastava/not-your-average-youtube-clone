@@ -21,7 +21,7 @@ const LiveStreamItem = async ({
 }: ILiveStreamItem) => {
   const thumbnailImage = !!thumbnail
     ? thumbnail
-    : "/live-stream-default-thumbnail.jpg"; // Can use getRandomLiveStreamPlaceholder() here
+    : "/anonymous-live-stream-thumbnail-img.jpg"; // Can use getRandomLiveStreamPlaceholder() here
 
   const userImage = !!userImageUrl
     ? userImageUrl
@@ -37,7 +37,7 @@ const LiveStreamItem = async ({
     >
       {/* User and Thumbnail Images */}
       <div
-        className="relative h-48 w-full rounded-sm bg-cover bg-bottom"
+        className="relative h-48 w-full rounded-sm bg-cover bg-center"
         style={{ backgroundImage: `url(${thumbnailImage})` }}
       >
         <div
