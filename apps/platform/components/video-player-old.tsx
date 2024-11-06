@@ -1,13 +1,13 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import videojs from "video.js";
-import "video.js/dist/video-js.css";
 import Player from "video.js/dist/types/player";
-
-// @ts-ignore
-import qualitySelector from "videojs-hls-quality-selector";
+import "video.js/dist/video-js.css";
 import * as _ from "videojs-contrib-quality-levels";
 import { useSearchParams } from "next/navigation";
+// @ts-ignore
+import qualitySelector from "videojs-hls-quality-selector";
 
 interface IVideoPlayerProps {
   isLive: boolean;

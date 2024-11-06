@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { Button } from "@repo/shadcn/components/ui/button";
 import { auth } from "@/auth";
-import UploadButton from "./upload-button";
+import { Button } from "@repo/shadcn/components/ui/button";
+import UploadButton from "./buttons/upload-button";
 
 const Navbar = async () => {
   const session = await auth();
@@ -24,7 +24,7 @@ const Navbar = async () => {
           </Button>
         </Link>
         <UploadButton isLoggedIn={!!session} />
-        {!!session && (
+        {session && (
           <Image
             width={36}
             height={36}
@@ -34,9 +34,6 @@ const Navbar = async () => {
           />
         )}
       </div>
-
-      {/* 
-      <LiveStreamButton /> */}
     </nav>
   );
 };
