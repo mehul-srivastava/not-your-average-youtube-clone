@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
         rtmpSecretKey: rtmpSecretKey,
         title: title,
         description: description,
-        thumbnail: "/live-stream-default-thumbnail.jpg", // TODO: replace this placeholder
+        thumbnail: "/anonymous-live-stream-thumbnail-img.jpg", // TODO: replace this placeholder
       },
       select: {
         id: true,
