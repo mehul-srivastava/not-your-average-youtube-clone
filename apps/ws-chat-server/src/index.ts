@@ -18,7 +18,6 @@ async function hanlder(ws: WebSocket, data: WebSocket.RawData) {
   const message = JSON.parse(data.toString()) as IncomingMessage;
 
   if (message.type === IncomingMessageType.JoinStream) {
-    console.log("receoved simething");
     const { id, name, streamId } = message.payload;
     streamManager.addUser(id, name, ws, streamId);
 
