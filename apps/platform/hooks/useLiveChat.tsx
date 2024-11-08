@@ -2,67 +2,52 @@
 
 import React, { useState } from "react";
 
-import { IncomingMessage, IncomingMessageType, OutgoingMessage, OutgoingMessageType } from "@/types";
+import { OutgoingMessage, OutgoingMessagePayload, OutgoingMessageType } from "@/types";
 
-const useLiveChat = (setChats: React.Dispatch<React.SetStateAction<IncomingMessage[]>>, id: string, name: string, streamId: string) => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+const useLiveChat = (setChats: React.Dispatch<React.SetStateAction<OutgoingMessage[]>>) => {
+  const [socketState, setSocketState] = useState<WebSocket | null>(null);
   const websocketUrl = process.env.NODE_ENV === "production" ? "ws://chat.youtube.mehuls.in" : "ws://localhost:8080";
 
-  function connect() {
-    const socket = new WebSocket(websocketUrl);
-
-    socket.onopen = () => {
-      const message: IncomingMessage = {
-        type: IncomingMessageType.JoinStream,
-        payload: {
-          id: id,
-          name: name,
-          streamId: streamId,
-        },
-      };
-
-      socket.send(JSON.stringify(message));
-      setSocket(socket);
-    };
-
+  function handleIncomingData(socket: WebSocket) {
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data) as OutgoingMessage;
 
       if (message.type === OutgoingMessageType.System) {
-        setChats((p) => [
-          ...p,
-          {
-            payload: {
-              id: id,
+        const systemChat = {
+          payload: {
+            name: message.payload.name,
+          } satisfies Pick<OutgoingMessagePayload, "name">,
+          type: message.type,
+        };
 
-              name: message.payload.name,
-              streamId: streamId,
-            },
-            type: IncomingMessageType.JoinStream,
-          },
-        ]);
+        setChats((p) => [...p, systemChat]);
       }
 
       if (message.type === OutgoingMessageType.User) {
-        setChats((p) => [
-          ...p,
-          {
-            payload: {
-              id: message.payload.id,
-              name: message.payload.name,
-              content: message.payload.content,
-              streamId: streamId,
-            },
-            type: IncomingMessageType.SendMessage,
-          },
-        ]);
+        const userChat = {
+          payload: {
+            id: message.payload.id,
+            name: message.payload.name,
+            content: message.payload.content,
+          } satisfies OutgoingMessagePayload,
+          type: OutgoingMessageType.User,
+        };
+
+        setChats((p) => [...p, userChat]);
       }
     };
 
-    socket.onerror = () => setSocket(null);
+    socket.onerror = () => setSocketState(null);
   }
 
-  return { socket, connect };
+  function handleConnection() {
+    const socket = new WebSocket(websocketUrl);
+    handleIncomingData(socket);
+    setSocketState(socket);
+    return socket;
+  }
+
+  return { socket: socketState, handleConnection };
 };
 
 export default useLiveChat;

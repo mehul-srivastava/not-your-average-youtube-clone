@@ -3,14 +3,15 @@ import { CircleUserIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import { cn } from "@repo/shadcn/lib/utils";
-import { IncomingMessage, IncomingMessageType } from "@/types";
+import { OutgoingMessage, OutgoingMessageType } from "@/types";
 
-const LiveChatContainer = ({ chats }: { chats: IncomingMessage[] }) => {
+const LiveChatContainer = ({ chats }: { chats: OutgoingMessage[] }) => {
   const session = useSession();
+
   return (
     <div className="flex flex-col gap-2 pb-16 pt-12">
       {chats.map((chat) => {
-        if (chat.type === IncomingMessageType.SendMessage) {
+        if (chat.type === OutgoingMessageType.User) {
           return (
             <div
               className={cn(
@@ -26,7 +27,7 @@ const LiveChatContainer = ({ chats }: { chats: IncomingMessage[] }) => {
           );
         }
 
-        if (chat.type === IncomingMessageType.JoinStream) {
+        if (chat.type === OutgoingMessageType.System) {
           return (
             <p className="mx-auto flex items-center gap-2 text-center text-sm text-gray-700">
               <CircleUserIcon className="h-4 w-4" />

@@ -1,12 +1,14 @@
 "use client";
+
 import React, { useState } from "react";
 
 import LiveChatContainer from "./live-chat-container";
 import LiveChatInput from "./live-chat-input";
-import { IncomingMessage } from "@/types";
+import { OutgoingMessage } from "@/types";
 
 const LiveChat = ({ streamId }: { streamId: string }) => {
-  const [chats, setChats] = useState<IncomingMessage[]>([]);
+  const [chats, setChats] = useState<OutgoingMessage[]>([]);
+
   return (
     <>
       <div className="absolute left-0 top-0 w-full">

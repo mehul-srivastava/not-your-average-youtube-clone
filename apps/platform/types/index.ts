@@ -4,6 +4,7 @@ export type LiveStreamType = LiveStream;
 export type VideoType = Video;
 export type CommentType = Comment;
 
+/* All types related to the live chat implementation are done in server's perspective */
 export type OutgoingMessagePayload = {
   id: string;
   name: string;
