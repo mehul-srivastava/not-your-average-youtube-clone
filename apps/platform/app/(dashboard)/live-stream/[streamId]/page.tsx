@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { CheckIcon, CircleAlertIcon } from "lucide-react";
 
 import prisma from "@/lib/prisma";
-import redis from "@/lib/redis";
 import VideoPlayer from "@/components/video-player-old";
 import LiveChat from "./__components/live-chat";
 
@@ -37,9 +36,6 @@ const page = async ({ params }: IPageProps) => {
 
   if (!data) redirect("/");
 
-  const key = "live:".concat(params.streamId);
-  const watching = parseInt((await redis.get(key))!);
-
   const streamRtmpSecretKey = data.rtmpSecretKey;
   const streamThumbnail = data.thumbnail ?? "/anonymous-live-stream-thumbnail-img.jpg";
   const userImage = data.user?.imageUrl ?? "/anonymous-live-stream-profile-img.png";
@@ -52,7 +48,7 @@ const page = async ({ params }: IPageProps) => {
         <div className="mt-4 flex items-start justify-between">
           <div>
             <h2 className="text-3xl font-semibold text-white">{data.title}</h2>
-            <h6 className="mt-2 text-xl font-light text-gray-400">{data.description}</h6>
+            <h6 className="text-xl font-light text-gray-400">{data.description}</h6>
 
             <div className="mt-4 flex items-center gap-2">
               <Image src={userImage} height={40} width={40} className="h-10 w-10 rounded-full" alt="user image" />
@@ -72,8 +68,9 @@ const page = async ({ params }: IPageProps) => {
               </div>
             </div>
           </div>
+          {/* TODO: show viewer count here - should include anonymous users as well */}
           <div className="flex items-center justify-end gap-2">
-            <p className="w-max grow text-xl font-normal text-gray-500 underline decoration-dotted underline-offset-2">{watching} watching</p>
+            <p className="w-max grow text-xl font-normal text-gray-500 underline decoration-dotted underline-offset-2">&nbsp;</p>
           </div>
         </div>
       </div>
