@@ -2,7 +2,7 @@ import React from "react";
 import { redirect } from "next/navigation";
 
 import prisma from "@/lib/prisma";
-import VideoPlayer from "@/components/video-player-old";
+import VideoPlayer from "@/components/video-player";
 import VideoMetadata from "./__components/video-section/metadata";
 import Comments from "./__components/comment-section/comments";
 import Recommendations from "./__components/recommendation-section/recommendations";
@@ -25,8 +25,9 @@ const page = async ({ searchParams }: IPageProps) => {
       manifestFile: true,
       title: true,
       description: true,
+      viewCount: true,
       thumbnail: true,
-      createdAt: true,
+      updatedAt: true,
       user: {
         select: {
           id: true,
@@ -64,19 +65,16 @@ const page = async ({ searchParams }: IPageProps) => {
   return (
     <div className="flex gap-4 p-10">
       <div className="flex w-9/12 flex-col gap-4">
-        <VideoPlayer
-          m3u8Url={video.manifestFile}
-          isLive={false}
-          poster={video.thumbnail ?? ""}
-        />
+        <VideoPlayer m3u8Url={video.manifestFile} isLive={false} poster={video.thumbnail ?? ""} />
         <VideoMetadata
           id={video.id}
           title={video.title}
           description={video.description}
+          viewCount={video.viewCount}
+          updatedAt={video.updatedAt}
           userId={video.user.id}
           userName={video.user.name}
           userImage={video.user.imageUrl}
-          createdAt={video.createdAt}
           subscribersCount={video.user._count.subscribers}
           likeCount={likeCount}
           dislikeCount={dislikeCount}

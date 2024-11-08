@@ -4,18 +4,11 @@ import { auth } from "@/auth";
 import { VideoType } from "@/types";
 import redis from "@/lib/redis";
 import prisma from "@/lib/prisma";
-import {
-  displayLongCount,
-  displayStandardCount,
-  pluralOrSingular,
-} from "@/utils";
+import { displayLongCount, displayStandardCount, pluralOrSingular } from "@/utils";
 import SubscribeButton from "./subscribe-button";
 import LikeDislikeButton from "./like-dislike-button";
 
-type IComponentProps = Omit<
-  VideoType,
-  "manifestFile" | "thumbnail" | "updatedAt" | "userId"
-> & {
+type IComponentProps = Omit<VideoType, "manifestFile" | "thumbnail" | "userId" | "createdAt"> & {
   userName: string;
   userImage: string;
   userId: string;
@@ -24,21 +17,23 @@ type IComponentProps = Omit<
   dislikeCount: number;
 };
 
-const VideoMetadata = async ({
-  id,
-  title,
-  description,
-  userId,
-  userName,
-  userImage,
-  subscribersCount,
-  likeCount,
-  dislikeCount,
-}: IComponentProps) => {
+const VideoMetadata = async ({ id, title, description, userId, userName, userImage, updatedAt, subscribersCount, viewCount, likeCount, dislikeCount }: IComponentProps) => {
   const session = await auth();
+  let totalViews = viewCount;
 
-  const key = "video:".concat(id);
-  const views = parseInt((await redis.get(key))!);
+  if (viewCount > 300 && new Date().getTime() - updatedAt.getTime() >= 12 * 60 * 60 * 1000) {
+    const key = "video:".concat(id);
+    totalViews = parseInt((await redis.get(key))!);
+
+    await prisma.video.update({
+      data: {
+        viewCount: totalViews,
+      },
+      where: {
+        id,
+      },
+    });
+  }
 
   return (
     <div>
@@ -47,53 +42,39 @@ const VideoMetadata = async ({
         <div>
           <h2 className="text-2xl font-semibold text-white">{title}</h2>
           <p className="text-xl font-normal text-gray-500">
-            {displayLongCount(views)} {pluralOrSingular("view", views)}
+            {displayLongCount(totalViews)} {pluralOrSingular("view", totalViews)}
           </p>
         </div>
         <div>
-          <ActionButtonGroup
-            videoId={id}
-            userId={userId}
-            likeCount={likeCount}
-            dislikeCount={dislikeCount}
-          />
+          <ActionButtonGroup videoId={id} userId={userId} likeCount={likeCount} dislikeCount={dislikeCount} />
         </div>
       </div>
+      <p className="mt-4 text-gray-300">{description}</p>
 
       {/* Channel Metadata */}
       <div className="mt-6 flex items-center gap-2">
-        <div
-          className="h-10 w-10 rounded-full bg-cover"
-          style={{ backgroundImage: `url("${userImage}")` }}
-        ></div>
+        <div className="h-10 w-10 rounded-full bg-cover" style={{ backgroundImage: `url("${userImage}")` }}></div>
         <div>
           <h3 className="text-lg">
             {userName} {session?.user?.id === userId && "(You)"}
           </h3>
           <h4 className="text-sm font-thin text-gray-500">
-            {displayStandardCount(subscribersCount || 0)}{" "}
-            {pluralOrSingular("subscriber", subscribersCount)}
+            {displayStandardCount(subscribersCount || 0)} {pluralOrSingular("subscriber", subscribersCount)}
           </h4>
         </div>
       </div>
-      <p className="mt-2 text-gray-300">{description}</p>
     </div>
   );
 };
 
-interface ISubComponentProps {
+interface IActionButtonGroupProps {
   videoId: string;
   userId: string;
   likeCount: number;
   dislikeCount: number;
 }
 
-const ActionButtonGroup = async ({
-  videoId,
-  userId,
-  likeCount,
-  dislikeCount,
-}: ISubComponentProps) => {
+const ActionButtonGroup = async ({ videoId, userId, likeCount, dislikeCount }: IActionButtonGroupProps) => {
   const session = await auth();
 
   const data = await prisma.user.findFirst({
@@ -121,21 +102,10 @@ const ActionButtonGroup = async ({
     },
   });
 
-  console.log();
-
   return (
     <div className="flex items-center justify-end gap-2">
-      <LikeDislikeButton
-        videoId={videoId}
-        likeCount={likeCount}
-        dislikeCount={dislikeCount}
-        currentUserHasLiked={data?.videos[0]?.ratings[0]?.choice}
-      />
-      <SubscribeButton
-        currentUserIsSubscriber={!data || data.subscribers.length > 0}
-        userId={userId}
-        videoId={videoId}
-      />
+      <LikeDislikeButton videoId={videoId} likeCount={likeCount} dislikeCount={dislikeCount} currentUserHasLiked={data?.videos[0]?.ratings[0]?.choice} />
+      <SubscribeButton currentUserIsSubscriber={!data || data.subscribers.length > 0} userId={userId} videoId={videoId} />
     </div>
   );
 };
