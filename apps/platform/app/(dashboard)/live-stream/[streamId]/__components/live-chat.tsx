@@ -1,18 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import LiveChatContainer from "./live-chat-container";
 import LiveChatInput from "./live-chat-input";
+import { IncomingMessage } from "@/types";
 
-interface IChat {
-  authorId: number;
-  type: string; // TODO: make this enum
-  message: string;
-  createdAt: Date;
-}
-
-const LiveChat = () => {
-  const [chats, setChats] = useState<IChat[]>([]);
+const LiveChat = ({ streamId }: { streamId: string }) => {
+  const [chats, setChats] = useState<IncomingMessage[]>([]);
   return (
     <>
       <div className="absolute left-0 top-0 w-full">
@@ -27,7 +21,7 @@ const LiveChat = () => {
         <LiveChatContainer chats={chats} />
       </div>
       <div className="absolute bottom-0 left-0 w-full">
-        <LiveChatInput setChats={setChats} />
+        <LiveChatInput setChats={setChats} streamId={streamId} />
       </div>
     </>
   );

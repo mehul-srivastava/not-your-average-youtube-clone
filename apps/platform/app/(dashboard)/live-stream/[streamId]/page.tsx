@@ -78,7 +78,7 @@ const page = async ({ params }: IPageProps) => {
         </div>
       </div>
       <div className="relative h-96 w-full rounded-md bg-black/40 p-2 lg:h-auto lg:w-3/12">
-        <LiveChat />
+        <LiveChat streamId={params.streamId} />
       </div>
     </div>
   );
