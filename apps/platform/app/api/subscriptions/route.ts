@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-import { ApiGetSubscriptions } from "@/types";
 import { revalidateTag } from "next/cache";
 
 export const GET = auth(async function GET(req) {

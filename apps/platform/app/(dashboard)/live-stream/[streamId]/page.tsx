@@ -60,13 +60,13 @@ const page = async ({ params }: IPageProps) => {
                 <p>{userName ?? "Unverified User"}</p>
                 {userName ? (
                   <p className="flex items-center gap-2">
-                    <small className="text-gray-500">Unverified User</small>
-                    <CircleAlertIcon className="h-3 w-3 text-yellow-500" />
+                    <small className="text-gray-500">Verified</small>
+                    <CheckIcon className="h-3 w-3 text-emerald-500" />
                   </p>
                 ) : (
                   <p className="flex items-center gap-2">
-                    <small className="text-gray-500">Verified</small>
-                    <CheckIcon className="h-3 w-3 text-emerald-500" />
+                    <small className="text-gray-500">Unverified</small>
+                    <CircleAlertIcon className="h-3 w-3 text-yellow-500" />
                   </p>
                 )}
               </div>
