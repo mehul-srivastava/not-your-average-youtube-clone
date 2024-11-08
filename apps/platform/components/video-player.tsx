@@ -1,61 +1,76 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import {
-  MediaController,
-  MediaControlBar,
-  MediaTimeRange,
-  MediaTimeDisplay,
-  MediaPlayButton,
-  MediaSeekBackwardButton,
-  MediaSeekForwardButton,
-  MediaMuteButton,
-  MediaLiveButton,
-  MediaPosterImage,
-} from "media-chrome/react";
-import "hls-video-element";
+
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import "video.js/dist/video-js.css";
+
+import useVideoPlayer from "@/hooks/useVideoPlayer";
+import { checkIfFullyVisible } from "@/utils/video";
+import Player from "video.js/dist/types/player";
 
 interface IVideoPlayerProps {
   isLive: boolean;
   m3u8Url: string;
-  poster?: string;
+  poster: string;
 }
 
 const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
-  const mediaRef = useRef();
-  const searchParams = useSearchParams();
+  const { player, vidRef } = useVideoPlayer(isLive, m3u8Url, poster);
 
+  const [visibility, setVisibility] = useState(false);
+  const [secondsPassed, setSecondsPassed] = useState(0);
+  const [hasWatchedTheVideo, setHasWatchedTheVideo] = useState(false);
+
+  // Condition 1: Setup observer for video element to make sure it is visible all the time
+  // Condition 2: If user is seeking, set time to 0
   useEffect(() => {
-    // @ts-ignore
-    mediaRef.current.load();
-  }, [searchParams.get("v")]);
+    let observer: IntersectionObserver;
+
+    if (vidRef.current && player) {
+      observer = checkIfFullyVisible(vidRef.current, setVisibility);
+
+      player.on("seeking", function () {
+        setSecondsPassed(0);
+      });
+
+      visibility ? player.play() : player.pause();
+    }
+
+    return () => observer && observer.disconnect();
+  }, [vidRef, player, visibility]);
+
+  // Condition 3: Take this interval timer upto 50% of total video duration
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (player) {
+      if (secondsPassed >= 21 && !player.ended() && !hasWatchedTheVideo) {
+        // TODO: make api call for watch completion
+        setHasWatchedTheVideo(() => true);
+      }
+
+      intervalId = setInterval(() => {
+        if (!player.paused()) {
+          setSecondsPassed((p) => ++p);
+        }
+      }, 1000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [vidRef, player, secondsPassed]);
 
   return (
-    <MediaController>
-      {/* @ts-ignore */}
-      <hls-video
-        suppressHydrationWarning
-        ref={mediaRef}
-        slot="media"
-        src={m3u8Url}
-        preload="auto"
-        crossOrigin=""
-      />
-      <MediaPosterImage slot="poster" src={poster}></MediaPosterImage>
-      <MediaControlBar>
-        <MediaPlayButton></MediaPlayButton>
-        <MediaMuteButton></MediaMuteButton>
-        {isLive && <MediaLiveButton></MediaLiveButton>}
-        {!isLive && (
-          <>
-            <MediaSeekBackwardButton></MediaSeekBackwardButton>
-            <MediaSeekForwardButton></MediaSeekForwardButton>
-          </>
-        )}
-        <MediaTimeRange></MediaTimeRange>
-        <MediaTimeDisplay showDuration></MediaTimeDisplay>
-      </MediaControlBar>
-    </MediaController>
+    <div data-vjs-player>
+      <video ref={vidRef} className="video-js vjs-default-skin vjs-big-play-centered w-full" controls width={600} height={600} loop={false} preload="auto" poster={poster} data-setup="">
+        <source src={m3u8Url} type="application/x-mpegURL" />
+        <p className="vjs-no-js">
+          To view this video please enable JavaScript, and consider upgrading to a web browser that
+          <a href="https://videojs.com/html5-video-support/" target="_blank">
+            supports HTML5 video
+          </a>
+        </p>
+      </video>
+    </div>
   );
 };
 

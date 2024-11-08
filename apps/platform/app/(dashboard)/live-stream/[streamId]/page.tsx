@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { CheckIcon, CircleAlertIcon } from "lucide-react";
 
 import prisma from "@/lib/prisma";
-import VideoPlayer from "@/components/video-player-old";
+import LiveStreamPlayer from "@/components/live-stream-player";
 import LiveChat from "./__components/live-chat";
 
 interface IPageProps {
@@ -44,7 +44,7 @@ const page = async ({ params }: IPageProps) => {
   return (
     <div className="flex flex-col gap-4 p-10 lg:flex-row">
       <div className="h-full w-full rounded-md lg:w-9/12">
-        <VideoPlayer m3u8Url={`${rtmpServer}/live/${streamRtmpSecretKey}/index.m3u8`} isLive={true} poster={streamThumbnail} />
+        <LiveStreamPlayer m3u8Url={`${rtmpServer}/live/${streamRtmpSecretKey}/index.m3u8`} isLive={true} poster={streamThumbnail} />
         <div className="mt-4 flex items-start justify-between">
           <div>
             <h2 className="text-3xl font-semibold text-white">{data.title}</h2>
