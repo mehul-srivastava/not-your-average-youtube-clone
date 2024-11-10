@@ -33,6 +33,7 @@ model Video {
   title        String
   description  String
   thumbnail    String?
+  isReady      Boolean   @default(false)
   viewCount    Int       @default(0)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
