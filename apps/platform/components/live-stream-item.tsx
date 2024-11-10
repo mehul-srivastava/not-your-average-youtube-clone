@@ -1,12 +1,16 @@
 import React from "react";
 import Link from "next/link";
-import { CheckIcon, CircleAlertIcon, UsersRoundIcon } from "lucide-react";
+import { CheckIcon, CircleAlertIcon } from "lucide-react";
 
-import redis from "@/lib/redis";
 import { LiveStreamType } from "@/types";
-import { displayStandardCount, timeAgo } from "@/utils";
+import { timeAgo } from "@/utils";
+import { $Enums } from "@prisma/client";
 
-type ILiveStreamItem = Omit<LiveStreamType, "rtmpSecretKey" | "description" | "userId" | "isFinished"> & { userImageUrl?: string; userName?: string; isFinished?: boolean };
+type ILiveStreamItem = Omit<LiveStreamType, "rtmpSecretKey" | "description" | "userId" | "isFinished"> & {
+  userImageUrl?: string;
+  userName?: string;
+  isFinished?: $Enums.Status;
+};
 
 const LiveStreamItem = async ({ id, title, thumbnail, createdAt, userImageUrl, userName, isFinished }: ILiveStreamItem) => {
   const thumbnailImage = !!thumbnail ? thumbnail : "/anonymous-live-stream-thumbnail-img.jpg"; // Can use getRandomLiveStreamPlaceholder() here
@@ -16,10 +20,18 @@ const LiveStreamItem = async ({ id, title, thumbnail, createdAt, userImageUrl, u
     <Link className="relative rounded-md p-2 transition-all duration-200 hover:bg-black" href={"/live-stream/".concat(id)}>
       {/* User and Thumbnail Images */}
       <div className="relative h-48 w-full rounded-sm bg-cover bg-center" style={{ backgroundImage: `url(${thumbnailImage})` }}>
-        <div className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-cover shadow-md" style={{ backgroundImage: `url(${userImage})` }}></div>
+        <div
+          className="absolute bottom-4 left-4 h-8 w-8 rounded-full bg-white bg-cover shadow-md"
+          style={{ backgroundImage: `url(${userImage})` }}
+        ></div>
       </div>
 
-      {isFinished && <span className="absolute right-0 top-0 m-2 rounded-bl-md bg-black px-4 py-2 text-xs">Ended</span>}
+      {isFinished === $Enums.Status.ENDED && (
+        <span className="absolute right-0 top-0 m-2 rounded-bl-md bg-black px-4 py-2 text-xs">Ended</span>
+      )}
+      {isFinished === $Enums.Status.NOT_STARTED && (
+        <span className="absolute right-0 top-0 m-2 rounded-bl-md bg-gray-500 px-4 py-2 text-xs">Not Started</span>
+      )}
 
       {/* Stream Metadata */}
       <div className="mt-1 flex items-center justify-between">

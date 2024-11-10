@@ -1,32 +1,19 @@
 "use client";
 
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import React, { useEffect, useRef, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
-
-import { Button } from "@repo/shadcn/components/ui/button";
-import { Textarea } from "@repo/shadcn/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@repo/shadcn/components/ui/form";
-import { Input } from "@repo/shadcn/components/ui/input";
-import { ClipboardCopyIcon } from "lucide-react";
+import { CircleHelpIcon, ClipboardCopyIcon } from "lucide-react";
 import toast, { LoaderIcon } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+
+import { Button } from "@repo/shadcn/components/ui/button";
+import { Textarea } from "@repo/shadcn/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@repo/shadcn/components/ui/form";
+import { Input } from "@repo/shadcn/components/ui/input";
 
 const page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -48,6 +35,9 @@ const page = () => {
 
     startVideo();
 
+    // TODO: if isFinished is null then it means user has not started streaming yet - fix it
+    // TODO: last fix: (1) modal for video upload, (2) put video upload progress in redis
+
     return () => {
       if (stream) {
         const tracks = stream.getTracks();
@@ -63,14 +53,8 @@ const page = () => {
     <div className="p-10">
       <div className="flex gap-6">
         <div className="relative w-full rounded-md">
-          <span className="absolute rounded-tl-[inherit] bg-gray-800 p-2">
-            Preview
-          </span>
-          <video
-            ref={videoRef}
-            autoPlay
-            className="h-full w-full rounded-[inherit] bg-black"
-          />
+          <span className="absolute rounded-tl-[inherit] bg-gray-800 p-2">Preview</span>
+          <video ref={videoRef} autoPlay className="h-full w-full rounded-[inherit] bg-black" />
         </div>
         <LiveStreamMetadata />
       </div>
@@ -81,15 +65,13 @@ const page = () => {
 const formSchema = z.object({
   title: z.string().min(2).max(50),
   description: z.string().min(2).max(100),
+  thumbnail: z.string(),
   rtmpUrl: z.string(),
   rtmpSecretKey: z.string(),
 });
 
 const LiveStreamMetadata = () => {
-  const rtmpUrl =
-    process.env.NODE_ENV === "production"
-      ? "rtmp://rtmp.youtube.mehuls.in/live"
-      : "rtmp://localhost:1935/live";
+  const rtmpUrl = process.env.NODE_ENV === "production" ? "rtmp://rtmp.youtube.mehuls.in/live" : "rtmp://localhost:1935/live";
 
   const rtmpSecretKey = uuidv4().split("-").slice(0, -1).join("-");
 
@@ -98,6 +80,7 @@ const LiveStreamMetadata = () => {
     defaultValues: {
       title: "",
       description: "",
+      thumbnail: "",
       rtmpUrl: rtmpUrl,
       rtmpSecretKey: rtmpSecretKey,
     },
@@ -122,9 +105,7 @@ const LiveStreamMetadata = () => {
     });
   }
 
-  function copyToClipboard(
-    ref: React.MutableRefObject<HTMLInputElement | null>,
-  ) {
+  function copyToClipboard(ref: React.MutableRefObject<HTMLInputElement | null>) {
     navigator.clipboard.writeText(ref?.current?.value ?? "");
     toast.success("Copied to clipboard!");
   }
@@ -149,15 +130,31 @@ const LiveStreamMetadata = () => {
 
           <FormField
             control={form.control}
+            name="thumbnail"
+            render={({ field }) => (
+              <FormItem className="w-full space-y-1">
+                <FormLabel>Thumbnail URL</FormLabel>
+                <FormControl>
+                  <div className="flex items-center gap-4">
+                    <Input placeholder="https://google.com/some-random-thumbnail.png" {...field} />
+                    <a target="_blank" href="https://www.google.com/search?q=freecodecamp+youtube+thumbnail+images&udm=2">
+                      <CircleHelpIcon className="h-4" />
+                    </a>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="description"
             render={({ field }) => (
               <FormItem className="space-y-1">
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="We will discuss about how to deploy a Next.js app to VPS."
-                    {...field}
-                  />
+                  <Textarea placeholder="We will discuss about how to deploy a Next.js app to VPS." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -173,13 +170,7 @@ const LiveStreamMetadata = () => {
                   <FormLabel htmlFor={field.name}>RTMP Stream URL</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input
-                        {...field}
-                        id={field.name}
-                        readOnly={true}
-                        ref={rtmpUrlInputRef}
-                        className="text-muted-foreground cursor-pointer select-none"
-                      />
+                      <Input {...field} id={field.name} readOnly={true} ref={rtmpUrlInputRef} className="text-muted-foreground cursor-pointer select-none" />
                       <ClipboardCopyIcon
                         onClick={() => copyToClipboard(rtmpUrlInputRef)}
                         className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 transform cursor-pointer"
@@ -220,12 +211,7 @@ const LiveStreamMetadata = () => {
             />
           </div>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            size={"sm"}
-            className="text-xs"
-          >
+          <Button disabled={isPending} type="submit" size={"sm"} className="text-xs">
             {isPending && <LoaderIcon className="mr-2" />}
             Start Live Stream
           </Button>

@@ -4,6 +4,7 @@ import { FlameIcon, RadioIcon } from "lucide-react";
 import prisma from "@/lib/prisma";
 import LiveStreamItem from "@/components/live-stream-item";
 import VideoItem from "@/components/video-item";
+import { $Enums } from "@prisma/client";
 
 const page = () => {
   return (
@@ -29,7 +30,7 @@ const LiveStreamSection = async () => {
       createdAt: true,
     },
     where: {
-      isFinished: false,
+      isFinished: $Enums.Status.RUNNING,
     },
     take: 3,
     orderBy: {
@@ -48,7 +49,15 @@ const LiveStreamSection = async () => {
 
         {liveStreams.length > 0 &&
           liveStreams.map((item) => (
-            <LiveStreamItem key={item.id} id={item.id} title={item.title} thumbnail={item.thumbnail} userImageUrl={item.user?.imageUrl} userName={item.user?.name} createdAt={item.createdAt} />
+            <LiveStreamItem
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              thumbnail={item.thumbnail}
+              userImageUrl={item.user?.imageUrl}
+              userName={item.user?.name}
+              createdAt={item.createdAt}
+            />
           ))}
       </div>
     </div>
@@ -83,7 +92,17 @@ const HomeFeedSection = async () => {
       <div className="mt-4 grid w-full grid-cols-5 gap-4">
         {videos.length <= 0 && "No video has been published as of now. You can be the first one!"}
 
-        {videos.length > 0 && videos.map((item) => <VideoItem key={item.id} id={item.id} title={item.title} thumbnail={item.thumbnail} userName={item.user?.name} createdAt={item.createdAt} />)}
+        {videos.length > 0 &&
+          videos.map((item) => (
+            <VideoItem
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              thumbnail={item.thumbnail}
+              userName={item.user?.name}
+              createdAt={item.createdAt}
+            />
+          ))}
       </div>
     </div>
   );

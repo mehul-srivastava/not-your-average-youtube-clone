@@ -71,7 +71,7 @@ model LiveStream {
   thumbnail     String?
   title         String
   description   String
-  isFinished    Boolean  @default(false)
+  isFinished    Status   @default(NOT_STARTED) // enum `Status` declared at end
   createdAt     DateTime @default(now())
 
   userId String?
@@ -79,7 +79,13 @@ model LiveStream {
 }
 
 enum Choice {
-  DISLIKE // Corresponds to -1
-  NEUTRAL // Corresponds to 0
-  LIKE // Corresponds to 1
+  DISLIKE // -1
+  NEUTRAL // 0
+  LIKE // 1
+}
+
+enum Status {
+  ENDED // -1
+  NOT_STARTED // 0
+  RUNNING // 1
 }

@@ -40,9 +40,20 @@ const config = {
 const rtmpServer = new NodeMediaServer(config);
 rtmpServer.run();
 
-rtmpServer.on("postPublish", (id, StreamPath, args) => {
+rtmpServer.on("postPublish", async (id, StreamPath, args) => {
   const value = StreamPath.split("/")[2];
   inMemoryRecord.set(id, value);
+
+  await fetch("http://localhost:3000/api/live-stream", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      secretKey,
+      isFinished: false,
+    }),
+  });
 });
 
 rtmpServer.on("doneConnect", async (id, args) => {
@@ -56,6 +67,7 @@ rtmpServer.on("doneConnect", async (id, args) => {
     },
     body: JSON.stringify({
       secretKey,
+      isFinished: true,
     }),
   });
 });

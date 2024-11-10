@@ -30,7 +30,9 @@ const page = async ({ params }: IPageProps) => {
     },
     where: {
       id: params.streamId,
-      isFinished: false,
+      isFinished: {
+        in: ["NOT_STARTED", "RUNNING"],
+      },
     },
   });
 
