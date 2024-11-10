@@ -19,6 +19,8 @@ type IComponentProps = Omit<VideoType, "manifestFile" | "thumbnail" | "userId" |
 
 const VideoMetadata = async ({ id, title, description, userId, userName, userImage, updatedAt, subscribersCount, viewCount, likeCount, dislikeCount }: IComponentProps) => {
   const session = await auth();
+
+  // TODO: remove this logic from here - either put it in a helper function or bring it to its parent
   let totalViews = viewCount;
 
   if (viewCount > 300 && new Date().getTime() - updatedAt.getTime() >= 12 * 60 * 60 * 1000) {
