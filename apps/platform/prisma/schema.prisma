@@ -67,7 +67,7 @@ model Rating {
 
 model LiveStream {
   id            String   @id @default(uuid())
-  rtmpSecretKey String
+  rtmpSecretKey String   @unique
   thumbnail     String?
   title         String
   description   String

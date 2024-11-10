@@ -23,3 +23,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({});
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  const { secretKey } = await request.json();
+
+  await prisma.liveStream.update({
+    where: {
+      rtmpSecretKey: secretKey,
+    },
+    data: {
+      isFinished: true,
+    },
+  });
+
+  return NextResponse.json({});
+}

@@ -4,37 +4,18 @@ import Link from "next/link";
 
 import redis from "@/lib/redis";
 import { VideoType } from "@/types";
-import {
-  displayStandardCount,
-  formatTitle,
-  pluralOrSingular,
-  timeAgo,
-} from "@/utils";
+import { displayStandardCount, formatTitle, pluralOrSingular, timeAgo } from "@/utils";
 
-type IVideoItem = Omit<
-  VideoType,
-  "description" | "manifestFile" | "userId" | "updatedAt"
-> & { userName: string };
+type IVideoItem = Omit<VideoType, "description" | "manifestFile" | "userId" | "updatedAt" | "viewCount"> & { userName: string };
 
-const VideoItem = async ({
-  id,
-  title,
-  thumbnail,
-  userName,
-  createdAt,
-}: IVideoItem) => {
+const VideoItem = async ({ id, title, thumbnail, userName, createdAt }: IVideoItem) => {
   const key = "video:".concat(id);
   const views = parseInt((await redis.get(key))!);
+  // TODO: change it to same as watch page - extract a helper function out
 
   return (
-    <Link
-      className="rounded-md p-2 transition-all duration-200 hover:bg-black"
-      href={"/watch?v=".concat(id)}
-    >
-      <div
-        className="relative h-48 w-full rounded-sm bg-cover"
-        style={{ backgroundImage: `url(${thumbnail})` }}
-      />
+    <Link className="rounded-md p-2 transition-all duration-200 hover:bg-black" href={"/watch?v=".concat(id)}>
+      <div className="relative h-48 w-full rounded-sm bg-cover" style={{ backgroundImage: `url(${thumbnail})` }} />
 
       <div className="mt-3 flex items-center justify-between">
         <p className="flex items-center gap-2 text-sm text-gray-500">
