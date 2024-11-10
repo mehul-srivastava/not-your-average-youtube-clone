@@ -7,6 +7,7 @@ import "video.js/dist/video-js.css";
 import useVideoPlayer from "@/hooks/useVideoPlayer";
 import { checkIfFullyVisible } from "@/utils/video";
 import Player from "video.js/dist/types/player";
+import axios from "axios";
 
 interface IVideoPlayerProps {
   isLive: boolean;
@@ -15,11 +16,17 @@ interface IVideoPlayerProps {
 }
 
 const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
-  const { player, vidRef } = useVideoPlayer(isLive, m3u8Url, poster);
+  const { player, vidRef, duration } = useVideoPlayer(isLive, m3u8Url, poster);
 
   const [visibility, setVisibility] = useState(false);
   const [secondsPassed, setSecondsPassed] = useState(0);
   const [hasWatchedTheVideo, setHasWatchedTheVideo] = useState(false);
+
+  const searchParams = useSearchParams();
+
+  async function updateViewCount() {
+    await axios.post("http://localhost:3000/api/watch", { id: searchParams.get("v") });
+  }
 
   // Condition 1: Setup observer for video element to make sure it is visible all the time
   // Condition 2: If user is seeking, set time to 0
@@ -39,13 +46,13 @@ const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
     return () => observer && observer.disconnect();
   }, [vidRef, player, visibility]);
 
-  // Condition 3: Take this interval timer upto 50% of total video duration
+  // Condition 3: Take this interval timer upto 40% of total video duration
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
     if (player) {
-      if (secondsPassed >= 21 && !player.ended() && !hasWatchedTheVideo) {
-        // TODO: make api call for watch completion
+      if (secondsPassed >= Math.floor(duration * 0.4) && !player.ended() && !hasWatchedTheVideo) {
+        updateViewCount();
         setHasWatchedTheVideo(() => true);
       }
 

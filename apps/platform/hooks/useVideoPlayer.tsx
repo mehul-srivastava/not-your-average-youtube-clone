@@ -9,9 +9,12 @@ import * as _ from "videojs-contrib-quality-levels";
 import qualitySelector from "videojs-hls-quality-selector";
 
 const useVideoPlayer = (isLive: boolean, m3u8Url: string, poster: string) => {
-  const vidRef = useRef<HTMLVideoElement>(null);
-  const searchParams = useSearchParams();
+  const [duration, setDuration] = useState(0);
   const [player, setPlayer] = useState<Player | null>(null);
+
+  const vidRef = useRef<HTMLVideoElement>(null);
+
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (player) {
@@ -41,14 +44,17 @@ const useVideoPlayer = (isLive: boolean, m3u8Url: string, poster: string) => {
     videojs.registerPlugin("hlsQualitySelector", qualitySelector);
 
     const p = videojs(vidRef.current!, videoJsOptions);
-    setPlayer(p);
+    p.on("loadedmetadata", () => {
+      setPlayer(p);
+      setDuration(() => p.duration()!);
+    });
 
     return () => {
       if (p) p.dispose();
     };
   }, [isLive]);
 
-  return { player, vidRef };
+  return { player, vidRef, duration };
 };
 
 export default useVideoPlayer;
