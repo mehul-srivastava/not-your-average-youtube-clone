@@ -16,6 +16,15 @@ export async function POST(request: NextRequest) {
 
   const hasLiked = Boolean(data.like);
 
+  const totalRatings = await prisma.rating.count({
+    where: { videoId: data.videoId },
+  });
+
+  if (totalRatings > 1000) {
+    // TODO: put data into kafka to be taken up by a consumer via a cron job
+    return NextResponse.json({ done: false });
+  }
+
   const existingRating = await prisma.rating.findFirst({
     where: { videoId: data.videoId, userId: session.user.id },
   });
@@ -28,19 +37,19 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
       },
     });
-  } else if (
-    (existingRating.choice === "LIKE" && hasLiked) ||
-    (existingRating.choice === "DISLIKE" && !hasLiked)
-  ) {
-    return NextResponse.json({ done: false });
-  } else {
-    await prisma.rating.update({
-      data: { choice: hasLiked ? "LIKE" : "DISLIKE" },
-      where: {
-        userId_videoId: { videoId: data.videoId, userId: session.user.id },
-      },
-    });
+    return NextResponse.json({ done: true });
   }
+
+  if ((existingRating.choice === "LIKE" && hasLiked) || (existingRating.choice === "DISLIKE" && !hasLiked)) {
+    return NextResponse.json({ done: false });
+  }
+
+  await prisma.rating.update({
+    data: { choice: hasLiked ? "LIKE" : "DISLIKE" },
+    where: {
+      userId_videoId: { videoId: data.videoId, userId: session.user.id },
+    },
+  });
 
   return NextResponse.json({ done: true });
 }
