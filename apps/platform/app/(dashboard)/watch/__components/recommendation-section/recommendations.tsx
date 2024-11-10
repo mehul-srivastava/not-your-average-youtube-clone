@@ -13,11 +13,13 @@ const Recommendations = async ({ searchParams }: IComponentProps) => {
       id: {
         not: searchParams.v,
       },
+      isReady: true,
     },
     select: {
       id: true,
       title: true,
       thumbnail: true,
+      viewCount: true,
       createdAt: true,
       user: {
         select: {
@@ -34,6 +36,7 @@ const Recommendations = async ({ searchParams }: IComponentProps) => {
       key={item.id}
       id={item.id}
       title={item.title}
+      viewCount={item.viewCount}
       thumbnail={item.thumbnail}
       userName={item.user.name}
       createdAt={item.createdAt}

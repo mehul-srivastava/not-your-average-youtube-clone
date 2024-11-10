@@ -22,6 +22,8 @@ const page = async () => {
               id: true,
               title: true,
               thumbnail: true,
+              isReady: true,
+              viewCount: true,
               createdAt: true,
               user: {
                 select: {
@@ -48,7 +50,21 @@ const page = async () => {
         {!data || !data.ratings || (data.ratings.length <= 0 && <p>You have not liked any videos yet!</p>)}
         {data &&
           data.ratings.length > 0 &&
-          data.ratings.map(({ video }) => <VideoItem key={video.id} id={video.id} title={video.title} thumbnail={video.thumbnail} userName={video.user?.name!} createdAt={video.createdAt} />)}
+          data.ratings.map(
+            ({ video }) =>
+              video.isReady && (
+                <VideoItem
+                  key={video.id}
+                  id={video.id}
+                  title={video.title}
+                  isReady={true}
+                  viewCount={video.viewCount}
+                  thumbnail={video.thumbnail}
+                  userName={video.user?.name!}
+                  createdAt={video.createdAt}
+                />
+              ),
+          )}
       </div>
     </div>
   );
