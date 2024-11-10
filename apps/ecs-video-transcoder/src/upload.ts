@@ -9,17 +9,13 @@ import { DeleteMessageCommand } from "@aws-sdk/client-sqs";
 async function uploadTranscodedVideos() {
   for (const { dimensions } of bitrates) {
     const qualityWithPixel = dimensions.split(":")[1] + "p";
-    const files = await fsPromisified.readdir(
-      paths.destination + qualityWithPixel,
-    );
+    const files = await fsPromisified.readdir(paths.destination + qualityWithPixel);
 
     for (const file of files) {
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_S3_DESTINATION_BUCKET_NAME!,
         Key: videoSuperdata.Folder + "/" + qualityWithPixel + "/" + file,
-        Body: fs.createReadStream(
-          path.resolve(paths.destination, qualityWithPixel, file),
-        ),
+        Body: fs.createReadStream(path.resolve(paths.destination, qualityWithPixel, file)),
       });
 
       console.log("Uploading:", file);
@@ -46,6 +42,13 @@ async function uploadTranscodedVideos() {
   await sqsClient.send(command);
 
   console.log("Uploading completed");
+
+  await fetch("http://localhost:3000/api/watch/ready", {
+    method: "POST",
+    body: JSON.stringify({ id: videoSuperdata.Folder }),
+  });
+
+  console.log("Updated database entry for video ID:", videoSuperdata.Folder);
 }
 
 export default uploadTranscodedVideos;
