@@ -1,24 +1,22 @@
 ### Fix
-- terraform setup
-- when uploading video, dialog should appear for metadata
 - track video upload progress across services (in REDIS)
-- when stream is over, rtmp server sends a request to webhook to update "isFinished" field (honojs)
-- minor bugs here/there - mainly like.dislike.subscribe
-- leave space for kafka in like-dislike api
 
-
-### Later
+### Work on
+- terraform setup
 - setup jenkins
+- pinecone recommendation system
 - setup prom. grafana
-- elk stack search
-- pinecone recommendation
+- shift queries to apis and mutations to server actions
+- clean up entire codebase
+- make a package for types
+- dockerise app
+- elk search
 - add cassandra
 - fix live stream view count (big update)
 
-
-### Metrics
-- Total comments posted?
-- Total views across all videos?
-- Total live streams created?
-- Total live stream chats?
-- Total users (loggedin + guest)?
+### Track Metrics!
+- Total comments posted
+- Total views across all videos
+- Total live streams created
+- Total live stream chats
+- Total users (loggedin + guest)
