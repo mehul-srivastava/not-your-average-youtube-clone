@@ -28,24 +28,31 @@ const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
     await axios.post("http://localhost:3000/api/watch", { id: searchParams.get("v") });
   }
 
-  // Condition 1: Setup observer for video element to make sure it is visible all the time
-  // Condition 2: If user is seeking, set time to 0
+  // Condition 1: Setup observer and event listener for video element to make sure it is visible all the time
   useEffect(() => {
     let observer: IntersectionObserver;
 
     if (vidRef.current && player) {
       observer = checkIfFullyVisible(vidRef.current, setVisibility);
 
-      player.on("seeking", function () {
-        setSecondsPassed(0);
-      });
-
-      visibility ? player.play() : player.pause();
+      if (player.hasStarted_) {
+        window.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "hidden") player.pause();
+          else player.play();
+        });
+        visibility ? player.play() : player.pause();
+      }
     }
 
-    return () => observer && observer.disconnect();
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+      window.removeEventListener("visibilitychange", () => {});
+    };
   }, [vidRef, player, visibility]);
 
+  // Condition 2: If user is seeking, stop the interval
   // Condition 3: Take this interval timer upto 40% of total video duration
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -57,7 +64,7 @@ const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
       }
 
       intervalId = setInterval(() => {
-        if (!player.paused()) {
+        if (!player.paused() && !player.seeking()) {
           setSecondsPassed((p) => ++p);
         }
       }, 1000);
@@ -68,7 +75,17 @@ const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
 
   return (
     <div data-vjs-player>
-      <video ref={vidRef} className="video-js vjs-default-skin vjs-big-play-centered w-full" controls width={600} height={600} loop={false} preload="auto" poster={poster} data-setup="">
+      <video
+        ref={vidRef}
+        className="video-js vjs-default-skin vjs-big-play-centered w-full"
+        controls
+        width={600}
+        height={600}
+        loop={false}
+        preload="auto"
+        poster={poster}
+        data-setup=""
+      >
         <source src={m3u8Url} type="application/x-mpegURL" />
         <p className="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a web browser that
