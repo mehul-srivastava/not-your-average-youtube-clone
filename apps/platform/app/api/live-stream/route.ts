@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { $Enums } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   try {
-    const { title, description, rtmpSecretKey } = await request.json();
+    const { title, description, rtmpSecretKey, thumbnail } = await request.json();
 
     const response = await prisma.liveStream.create({
       data: {
         rtmpSecretKey: rtmpSecretKey,
         title: title,
         description: description,
-        thumbnail: "/anonymous-live-stream-thumbnail-img.jpg", // TODO: replace this placeholder
+        thumbnail: thumbnail ?? "/anonymous-live-stream-thumbnail-img.jpg",
       },
       select: {
         id: true,
@@ -25,14 +26,16 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const { secretKey } = await request.json();
+  const { secretKey, isFinished } = await request.json();
 
   await prisma.liveStream.update({
     where: {
       rtmpSecretKey: secretKey,
     },
     data: {
-      isFinished: true,
+      isFinished: {
+        set: isFinished ? $Enums.Status.ENDED : $Enums.Status.RUNNING,
+      },
     },
   });
 
