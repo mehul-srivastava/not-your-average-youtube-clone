@@ -46,8 +46,7 @@ const Comments = async ({ videoId }: IComponentProps) => {
   return (
     <div className="mt-6 h-full w-full">
       <h3 className="text-2xl">
-        {displayLongCount(data?._count.comments || 0)}{" "}
-        {pluralOrSingular("comment", data?._count.comments || 0)}
+        {displayLongCount(data?._count.comments || 0)} {pluralOrSingular("comment", data?._count.comments || 0)}
       </h3>
       <CommentInputField
         videoId={videoId}
@@ -57,11 +56,9 @@ const Comments = async ({ videoId }: IComponentProps) => {
         }
       />
       <div className="mt-6 flex flex-col gap-4">
-        <UpcomingFeature message="Nested/pinned comments and upvotes feature coming up soon!" />
+        <UpcomingFeature message="Upcoming nested/pinned comments + upvotes feature!" />
 
-        {!data ||
-          (data.comments.length <= 0 &&
-            "Be the first to share your thoughts on this video!")}
+        {!data || (data.comments.length <= 0 && "Be the first to share your thoughts on this video!")}
 
         {data &&
           data.comments.length > 0 &&

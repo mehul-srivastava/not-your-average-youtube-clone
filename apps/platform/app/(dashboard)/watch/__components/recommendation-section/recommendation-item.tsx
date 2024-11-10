@@ -3,25 +3,11 @@ import Link from "next/link";
 
 import redis from "@/lib/redis";
 import { VideoType } from "@/types";
-import {
-  displayStandardCount,
-  formatTitle,
-  pluralOrSingular,
-  timeAgo,
-} from "@/utils";
+import { displayStandardCount, formatTitle, pluralOrSingular, timeAgo } from "@/utils";
 
-type IComponentProps = Omit<
-  VideoType,
-  "description" | "manifestFile" | "updatedAt" | "userId"
-> & { userName: string };
+type IComponentProps = Omit<VideoType, "description" | "manifestFile" | "updatedAt" | "userId" | "isReady"> & { userName: string };
 
-const RecommendVideoItem = async ({
-  id,
-  title,
-  thumbnail,
-  createdAt,
-  userName,
-}: IComponentProps) => {
+const RecommendVideoItem = async ({ id, title, thumbnail, createdAt, userName }: IComponentProps) => {
   const key = "video:".concat(id);
   const views = parseInt((await redis.get(key))!);
 
@@ -38,8 +24,7 @@ const RecommendVideoItem = async ({
             <p className="mt-1 text-sm text-gray-400">{userName}</p>
           </div>
           <small className="text-gray-500">
-            {displayStandardCount(views)} {pluralOrSingular("view", views)} •{" "}
-            {timeAgo(createdAt)}
+            {displayStandardCount(views)} {pluralOrSingular("view", views)} • {timeAgo(createdAt)}
           </small>
         </div>
       </div>
