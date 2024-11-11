@@ -1,5 +1,9 @@
+# Urgent
+- cleanup all apps/packages (transfer packages to main package.json, optimize turborepo)
+- switch to esbuild (100x faster builds than tsc)
+- setup entire infra on terraform
+
 ### Work on
-- terraform setup
 - setup jenkins
 - pinecone recommendation system
 - setup prom. grafana
