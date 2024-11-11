@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 
 import prisma from "@/lib/prisma";
 import VideoPlayer from "@/components/video-player";
+import UpcomingFeature from "@/components/upcoming-feature";
 import VideoMetadata from "./__components/video-section/metadata";
 import Comments from "./__components/comment-section/comments";
 import Recommendations from "./__components/recommendation-section/recommendations";
-import UpcomingFeature from "@/components/upcoming-feature";
 
 interface IPageProps {
   searchParams: {

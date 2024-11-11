@@ -1,7 +1,7 @@
 import React from "react";
 
 const page = () => {
-  // work in progress
+  // TODO: work in progress
 
   return <div>page</div>;
 };

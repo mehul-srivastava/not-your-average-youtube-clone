@@ -11,6 +11,17 @@ const LiveChatContainer = ({ chats }: { chats: OutgoingMessage[] }) => {
   return (
     <div className="flex flex-col gap-2 pb-16 pt-12">
       {chats.map((chat) => {
+        /* System message */
+        if (chat.type === OutgoingMessageType.System) {
+          return (
+            <p className="mx-auto flex items-center gap-2 text-center text-sm text-gray-700">
+              <CircleUserIcon className="h-4 w-4" />
+              <span>{chat.payload.name} joined the stream</span>
+            </p>
+          );
+        }
+
+        /* User message */
         if (chat.type === OutgoingMessageType.User) {
           return (
             <div
@@ -24,15 +35,6 @@ const LiveChatContainer = ({ chats }: { chats: OutgoingMessage[] }) => {
                 {chat.payload.name} ({new Date().toLocaleTimeString()})
               </small>
             </div>
-          );
-        }
-
-        if (chat.type === OutgoingMessageType.System) {
-          return (
-            <p className="mx-auto flex items-center gap-2 text-center text-sm text-gray-700">
-              <CircleUserIcon className="h-4 w-4" />
-              <span>{chat.payload.name} joined the stream</span>
-            </p>
           );
         }
       })}
