@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import "video.js/dist/video-js.css";
 
+import axiosInstance from "@/lib/axios";
 import useVideoPlayer from "@/hooks/useVideoPlayer";
 import { checkIfFullyVisible } from "@/utils/video";
-import Player from "video.js/dist/types/player";
-import axios from "axios";
+import toast from "react-hot-toast";
 
 interface IVideoPlayerProps {
   isLive: boolean;
@@ -25,7 +25,12 @@ const VideoPlayer = ({ isLive, m3u8Url, poster }: IVideoPlayerProps) => {
   const searchParams = useSearchParams();
 
   async function updateViewCount() {
-    await axios.post("http://localhost:3000/api/watch", { id: searchParams.get("v") });
+    try {
+      await axiosInstance.patch("/artifacts/update/watch-count", { id: searchParams.get("v") });
+      toast.success("This video just gained a view!");
+    } catch {
+      toast.error("Something went wrong while evaluating your view!");
+    }
   }
 
   // Condition 1: Setup observer and event listener for video element to make sure it is visible all the time

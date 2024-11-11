@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import prisma from "@/lib/prisma";
-import { $Enums } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,24 +20,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ streamId: response.id });
   } catch (e: any) {
-    console.log("[LIVE STREAM CREATE]:", e.message);
-    return NextResponse.json({});
+    console.log("[CREATE.LIVE-STREAM]:", e.message);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
-}
-
-export async function PATCH(request: NextRequest) {
-  const { secretKey, isFinished } = await request.json();
-
-  await prisma.liveStream.update({
-    where: {
-      rtmpSecretKey: secretKey,
-    },
-    data: {
-      isFinished: {
-        set: isFinished ? $Enums.Status.ENDED : $Enums.Status.RUNNING,
-      },
-    },
-  });
-
-  return NextResponse.json({});
 }

@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+import axiosInstance from "@/lib/axios";
 import { Button } from "@repo/shadcn/components/ui/button";
 import { Input } from "@repo/shadcn/components/ui/input";
 
@@ -19,10 +19,7 @@ const CommentInputField = ({ userImage, videoId }: IComponentProps) => {
   const router = useRouter();
 
   const localStorageCommentKey = "comment:".concat(videoId);
-  const initialValue =
-    typeof window !== "undefined"
-      ? localStorage.getItem(localStorageCommentKey) || ""
-      : "";
+  const initialValue = typeof window !== "undefined" ? localStorage.getItem(localStorageCommentKey) || "" : "";
 
   const [inputComment, setInputComment] = useState(initialValue);
 
@@ -35,7 +32,7 @@ const CommentInputField = ({ userImage, videoId }: IComponentProps) => {
     }
 
     try {
-      await axios.post("http://localhost:3000/api/comment", {
+      await axiosInstance.post("/artifacts/create/comment", {
         commentContent: inputComment,
         videoId: videoId,
       });
@@ -44,9 +41,9 @@ const CommentInputField = ({ userImage, videoId }: IComponentProps) => {
       localStorage.removeItem(localStorageCommentKey);
 
       router.refresh();
-    } catch (e: any) {
-      console.log("[COMMENT]:", e.message);
-      toast.error("Error occurred while posting the comment!");
+      toast.success("Your comment has been posted!");
+    } catch {
+      toast.error("Something went wrong!");
     }
   }
 
@@ -59,19 +56,10 @@ const CommentInputField = ({ userImage, videoId }: IComponentProps) => {
             backgroundImage: `url("${userImage}")`,
           }}
         />
-        <Input
-          value={inputComment}
-          placeholder="Thoughts?"
-          onChange={(e) => setInputComment(e.target.value)}
-        />
+        <Input value={inputComment} placeholder="Thoughts?" onChange={(e) => setInputComment(e.target.value)} />
       </div>
       <div className="mt-4 flex justify-end gap-1">
-        <Button
-          size="sm"
-          className="text-sm"
-          disabled={!inputComment}
-          onClick={handleClick}
-        >
+        <Button size="sm" className="text-sm" disabled={!inputComment} onClick={handleClick}>
           Comment
         </Button>
       </div>

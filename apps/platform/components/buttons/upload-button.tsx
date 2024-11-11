@@ -2,13 +2,14 @@
 
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import { CircleHelpIcon } from "lucide-react";
+import axios from "axios";
 
+import axiosInstance from "@/lib/axios";
 import { Button } from "@repo/shadcn/components/ui/button";
 import { Input } from "@repo/shadcn/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@repo/shadcn/components/ui/dialog";
-import { CircleHelpIcon } from "lucide-react";
 
 const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,49 +39,46 @@ const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   }
 
   async function handleUpload() {
-    try {
-      if (!metadata.title) {
-        toast.error("Please enter a title!");
-        return;
-      }
-      if (!metadata.description) {
-        toast.error("Please enter a description!");
-        return;
-      }
-      if (!metadata.thumbnail) {
-        toast.error("Please enter a thumbnail!");
-        return;
-      }
-      if (!file) {
-        toast.error("Please upload a file!");
-        return;
-      }
-      if (file.type !== "video/mp4") {
-        toast.error("Please upload a file in .mp4 format only");
-        return;
-      }
-      if (file.size > 50 * 1000000) {
-        toast.error("Please upload a file less than 50MB");
-        return;
-      }
+    if (!metadata.title) {
+      toast.error("Please enter a title!");
+      return;
+    }
+    if (!metadata.description) {
+      toast.error("Please enter a description!");
+      return;
+    }
+    if (!metadata.thumbnail) {
+      toast.error("Please enter a thumbnail!");
+      return;
+    }
+    if (!file) {
+      toast.error("Please upload a file!");
+      return;
+    }
+    if (file.type !== "video/mp4") {
+      toast.error("Please upload a file in .mp4 format only");
+      return;
+    }
+    if (file.size > 50 * 1000000) {
+      toast.error("Please upload a file less than 50MB");
+      return;
+    }
 
+    try {
       // TODO: this way is highly unscalable - put event in sqs, an upload-sweeper gets event from sqs and updates the database
-      // TODO: also replace all localhost url - do this by making a centralised axios instance in lib/
-      const response = await axios.post("/api/get-presigned-url", {
+      const response = await axiosInstance.post("/s3-presigned-url", {
         filename: file.name,
         title: metadata.title,
         description: metadata.description,
         thumbnail: metadata.thumbnail,
       });
 
-      // TODO: remove below comment
       await axios.put(response.data.url, file);
 
       setIsModalOpen(false);
-
       alert("Your video is being transcoded, should appear on the page in about a minute considering the limit on the file size!");
-    } catch (e) {
-      console.log(e);
+    } catch {
+      toast.error("Something went wrong!");
     }
   }
 

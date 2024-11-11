@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useTransition } from "react";
-import axios from "axios";
+"use client";
+
+import React, { useRef, useTransition } from "react";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { useForm } from "react-hook-form";
@@ -8,6 +9,7 @@ import toast, { LoaderIcon } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleHelpIcon, ClipboardCopyIcon } from "lucide-react";
 
+import axiosInstance from "@/lib/axios";
 import { Button } from "@repo/shadcn/components/ui/button";
 import { Textarea } from "@repo/shadcn/components/ui/textarea";
 import { Input } from "@repo/shadcn/components/ui/input";
@@ -45,12 +47,11 @@ const CreateLiveStreamForm = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
       try {
-        await axios.post("/api/live-stream", values);
+        const response = await axiosInstance.post("/artifacts/create/live-stream", values);
+        router.push(`/live-stream/${response.data.streamId}`);
         toast.success("You can start streaming from OBS now!");
-        router.push("/");
-      } catch (e: any) {
-        toast.error("Could not start the stream!");
-        console.log(e);
+      } catch {
+        toast.error("Something went wrong!");
       }
     });
   }

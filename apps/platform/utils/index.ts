@@ -1,5 +1,11 @@
+import { createId } from "@paralleldrive/cuid2";
+
 export function getRandomLiveStreamPlaceholder() {
   return `https://picsum.photos/id/${Math.ceil(Math.random() * 1000)}/490/200`;
+}
+
+export function getCloudfrontManifestUrl(cuid: string) {
+  return (process.env.CLOUDFRONT_URL + "/" + cuid).concat("/master.m3u8");
 }
 
 export function pluralOrSingular(word: string, count: number) {
