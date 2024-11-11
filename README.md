@@ -1,6 +1,3 @@
-### Fix
-- track video upload progress across services (in REDIS)
-
 ### Work on
 - terraform setup
 - setup jenkins
