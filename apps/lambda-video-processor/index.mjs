@@ -11,13 +11,8 @@ const params = {
   networkConfiguration: {
     awsvpcConfiguration: {
       assignPublicIp: "ENABLED",
-      securityGroups: ["sg-0115108e2baf6fab0"],
-      subnets: [
-        "subnet-073a9e8fbb5ccde3d",
-        "subnet-08b5a974ad9b57669",
-        "subnet-0259e841c4ac7df44",
-        "subnet-0ea4eeb2af28461ad",
-      ],
+      securityGroups: ["sg-0ccd48e91e7d36e74"],
+      subnets: ["subnet-08a3fdff2aaccdeb3"],
     },
   },
   overrides: {
@@ -31,7 +26,7 @@ const params = {
           },
           {
             name: "AWS_SQS_MESSAGE_RECEIPT_HANDLE",
-            value: "",
+            value: "", // inserted by handler
           },
           {
             name: "AWS_S3_SOURCE_BUCKET_NAME",
@@ -54,7 +49,6 @@ const params = {
 export const handler = async (event) => {
   try {
     const s3Notification = JSON.parse(event.Records[0].body);
-
     const videoKey = s3Notification.Records[0].s3.object.key;
     const receiptHandle = event.Records[0].receiptHandle;
 
@@ -63,6 +57,8 @@ export const handler = async (event) => {
 
     const command = new RunTaskCommand(params);
     const response = await client.send(command);
+
+    console.log(response);
 
     return {
       statusCode: 200,
