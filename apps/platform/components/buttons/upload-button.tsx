@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
-import toast from "react-hot-toast";
+import React, { useEffect, useState } from "react";
+import toast, { LoaderIcon } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { CircleHelpIcon } from "lucide-react";
+import { AlertCircleIcon, CircleHelpIcon } from "lucide-react";
 import axios from "axios";
 
 import axiosInstance from "@/lib/axios";
 import { Button } from "@repo/shadcn/components/ui/button";
 import { Input } from "@repo/shadcn/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@repo/shadcn/components/ui/dialog";
+
+const messages = ["Uploading", "Working hard", "Hang tight"];
 
 const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,6 +21,17 @@ const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     thumbnail: "",
   });
   const [file, setFile] = useState<File | undefined>();
+  const [isUploading, setIsUploading] = useState(false);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
+    }, 5 * 1000);
+
+    return () => clearInterval(interval);
+  }, [isUploading]);
+
   const router = useRouter();
 
   function handleButtonClick() {
@@ -39,6 +52,7 @@ const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   }
 
   async function handleUpload() {
+    setIsUploading(false);
     if (!metadata.title) {
       toast.error("Please enter a title!");
       return;
@@ -64,6 +78,7 @@ const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
       return;
     }
 
+    setIsUploading(true);
     try {
       // TODO: this way is highly unscalable - put event in sqs, an upload-sweeper gets event from sqs and updates the database
       const response = await axiosInstance.post("/s3-presigned-url", {
@@ -76,8 +91,11 @@ const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
       await axios.put(response.data.url, file);
 
       setIsModalOpen(false);
-      alert("Your video is being transcoded, should appear on the page in about a minute considering the limit on the file size!");
-    } catch {
+      setIsUploading(false);
+      alert("Your video is uploaded, should take about ~1-2 mins to transcode considering the limit on the file size!");
+    } catch (e: any) {
+      console.log(e);
+      setIsUploading(false);
       toast.error("Something went wrong!");
     }
   }
@@ -109,9 +127,19 @@ const UploadButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 This action cannot be undone. This will permanently delete your account and remove your data from our servers.
               </span>
 
-              <Button size={"sm"} className="mt-2" onClick={handleUpload}>
-                Upload
+              <Button disabled={isUploading} size={"sm"} className="mt-2" onClick={handleUpload}>
+                <span className="transition-all duration-300">{isUploading ? messages[currentMessageIndex] : "Upload"}</span>{" "}
+                {isUploading && <LoaderIcon className="ml-2 h-2 w-2" />}
               </Button>
+              {isUploading && (
+                <p className="mt-5 flex items-center">
+                  <AlertCircleIcon className="mr-2 h-6 w-6 text-yellow-600" />
+                  <span>
+                    Your video is being uploaded to S3. Do not close this window. This will take approx. 30-40 seconds depending on
+                    file size!
+                  </span>
+                </p>
+              )}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

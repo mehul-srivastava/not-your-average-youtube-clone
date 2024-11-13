@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: url });
   } catch (e: any) {
+    console.log("[PRESIGNED URL]:", e.message);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

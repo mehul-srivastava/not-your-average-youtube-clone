@@ -6,7 +6,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  prisma;
   return (
     <main className="bg-brand relative min-h-screen w-full">
       {/* pl = sidebar width  */}

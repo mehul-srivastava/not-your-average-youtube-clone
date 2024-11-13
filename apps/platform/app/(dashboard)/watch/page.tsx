@@ -70,7 +70,7 @@ const page = async ({ searchParams }: IPageProps) => {
         <VideoPlayer m3u8Url={video.manifestFile} isLive={false} poster={video.thumbnail ?? ""} />
         <UpcomingFeature
           upcoming={false}
-          message="This video player does not increment the watch count just by reloading or ending the video. It has a proper (though rough) implementation of how Youtube calculates the watch views on a video."
+          message="This video player does not increment the watch count just by reloading or ending the video. It has a proper (though rough) implementation similar to how Youtube calculates the watch views on a video."
         />
         <VideoMetadata
           id={video.id}

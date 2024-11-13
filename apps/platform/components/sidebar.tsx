@@ -11,7 +11,7 @@ import LogoutButton from "./buttons/logout-button";
 const Sidebar = async () => {
   const session = await auth();
 
-  const data = await fetch("http://localhost:3000/api/subscriptions", {
+  const data = await fetch("http://localhost:3000/api/artifacts/read/subscription", {
     next: {
       tags: ["subscriptions"],
     },
@@ -44,16 +44,18 @@ const Sidebar = async () => {
       </ul>
 
       <ul className="flex h-full flex-col gap-4 overflow-auto text-center">
-        {response.data.map((item: any) => (
-          <Tooltip key={item.id}>
-            <TooltipTrigger>
-              <div className="mx-auto h-5 w-5 rounded-full bg-cover" style={{ backgroundImage: `url("${item.imageUrl}")` }} />
-            </TooltipTrigger>
-            <TooltipContent side="right" className="p-1 px-2 text-xs">
-              <p>{item.name}</p>
-            </TooltipContent>
-          </Tooltip>
-        ))}
+        {response.data &&
+          response.data.length > 0 &&
+          response.data?.map((item: any) => (
+            <Tooltip key={item.id}>
+              <TooltipTrigger>
+                <div className="mx-auto h-5 w-5 rounded-full bg-cover" style={{ backgroundImage: `url("${item.imageUrl}")` }} />
+              </TooltipTrigger>
+              <TooltipContent side="right" className="p-1 px-2 text-xs">
+                <p>{item.name}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
       </ul>
 
       {session && <LogoutButton />}
