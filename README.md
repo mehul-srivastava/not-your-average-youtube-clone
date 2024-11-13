@@ -3,6 +3,11 @@
 - switch to esbuild (100x faster builds than tsc)
 - setup entire infra on terraform
 
+# Small Fix
+- recommendation section (right side) shows NaNM views when it is zero
+- fetch does not work on rtmp server or ecs container
+- live stream is stuck at not started even though it works
+
 ### Work on
 - setup jenkins
 - pinecone recommendation system
