@@ -3,8 +3,8 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 
-import transcodeVideo from "./transcode";
-import { paths, videoSuperdata, s3Client } from "./config";
+import transcodeVideo from "./transcode.js";
+import { paths, videoSuperdata, s3Client } from "./config.js";
 
 fs.mkdirSync(path.join("raw"), { recursive: true });
 fs.mkdirSync(path.join("transcoded"), { recursive: true });
@@ -16,10 +16,10 @@ async function downloadVideoFromS3() {
       Key: `${videoSuperdata.Folder}/${videoSuperdata.Key}`,
     }),
   );
-  await downloadToLocal(data.Body as Readable);
+  await downloadToLocal(data.Body);
 }
 
-async function downloadToLocal(body: Readable) {
+async function downloadToLocal(body) {
   if (!(body instanceof Readable)) {
     throw new Error("Body is not a readable stream");
   }
@@ -38,9 +38,14 @@ async function downloadToLocal(body: Readable) {
   });
 }
 
-downloadVideoFromS3().then(async () => {
-  await transcodeVideo();
+downloadVideoFromS3()
+  .then(async () => {
+    await transcodeVideo();
 
-  console.log("Gracefully exiting...");
-  process.exit(0);
-});
+    console.log("Gracefully exiting...");
+    process.exit(0);
+  })
+  .catch((e) => {
+    console.log("MESSAGE:", e.message);
+    console.log("FULL ERROR:", e);
+  });

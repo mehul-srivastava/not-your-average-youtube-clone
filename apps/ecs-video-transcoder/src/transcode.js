@@ -7,8 +7,8 @@ import child_process from "node:child_process";
 import path from "node:path";
 import fs from "node:fs";
 
-import { videoSuperdata, bitrates, paths } from "./config";
-import uploadTranscodedVideos from "./upload";
+import { videoSuperdata, bitrates, paths } from "./config.js";
+import uploadTranscodedVideos from "./upload.js";
 
 const exec = util.promisify(child_process.exec);
 
@@ -17,7 +17,7 @@ const masterManifestExecCmd = path.resolve("scripts", "create-master-manifest.sh
 
 async function transcodeVideo() {
   for (const { bitrate, dimensions } of bitrates) {
-    const qualityWithPixel = (dimensions.split(":")[1] + "p") as string;
+    const qualityWithPixel = dimensions.split(":")[1] + "p";
     const destinationFile = prepAndGetDestinationFile(qualityWithPixel);
 
     const command = getFFmpegCommand(bitrate, dimensions, destinationFile);
@@ -34,14 +34,14 @@ async function transcodeVideo() {
   await uploadTranscodedVideos();
 }
 
-function prepAndGetDestinationFile(quality: string) {
+function prepAndGetDestinationFile(quality) {
   const destination = paths.destination + quality;
 
   fs.mkdirSync(destination, { recursive: true });
   return destination;
 }
 
-function getFFmpegCommand(bitrate: string, dimensions: string, destinaton: string) {
+function getFFmpegCommand(bitrate, dimensions, destinaton) {
   return `ffmpeg -i ${originFile} -vf scale=${dimensions} -b:v ${bitrate} -b:a 128k -codec:a aac \
     -f hls -hls_time 3 -hls_list_size 0 -hls_segment_filename ${destinaton}/'segment%03d.ts' ${destinaton}/index.m3u8`;
 }

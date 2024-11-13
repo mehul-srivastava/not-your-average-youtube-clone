@@ -1,10 +1,10 @@
-import fsPromisified from "node:fs/promises";
 import fs from "node:fs";
+import fsPromisified from "node:fs/promises";
 import path from "node:path";
-import { videoSuperdata, bitrates, paths, s3Client, sqsClient } from "./config";
-
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { DeleteMessageCommand } from "@aws-sdk/client-sqs";
+
+import { videoSuperdata, bitrates, paths, s3Client, sqsClient } from "./config.js";
 
 async function uploadTranscodedVideos() {
   for (const { dimensions } of bitrates) {
@@ -13,7 +13,7 @@ async function uploadTranscodedVideos() {
 
     for (const file of files) {
       const command = new PutObjectCommand({
-        Bucket: process.env.AWS_S3_DESTINATION_BUCKET_NAME!,
+        Bucket: process.env.AWS_S3_DESTINATION_BUCKET_NAME,
         Key: videoSuperdata.Folder + "/" + qualityWithPixel + "/" + file,
         Body: fs.createReadStream(path.resolve(paths.destination, qualityWithPixel, file)),
       });
@@ -28,7 +28,7 @@ async function uploadTranscodedVideos() {
 
   // Upload master manifest
   const masterManifestCommand = new PutObjectCommand({
-    Bucket: process.env.AWS_S3_DESTINATION_BUCKET_NAME!,
+    Bucket: process.env.AWS_S3_DESTINATION_BUCKET_NAME,
     Key: videoSuperdata.Folder + "/" + "master.m3u8",
     Body: fs.createReadStream(path.resolve(paths.destination, "master.m3u8")),
   });

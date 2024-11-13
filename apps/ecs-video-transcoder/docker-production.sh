@@ -5,7 +5,6 @@
 set -e
 
 npm install
-npm run build
 
 # Run this if not logged in: aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 886436961672.dkr.ecr.eu-north-1.amazonaws.com
 docker build -t youtube-clone/video-transcoder .
