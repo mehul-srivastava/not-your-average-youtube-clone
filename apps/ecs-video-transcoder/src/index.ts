@@ -1,9 +1,13 @@
 import fs from "node:fs";
+import path from "node:path";
 import { Readable } from "node:stream";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 
 import transcodeVideo from "./transcode";
 import { paths, videoSuperdata, s3Client } from "./config";
+
+fs.mkdirSync(path.join("raw"), { recursive: true });
+fs.mkdirSync(path.join("transcoded"), { recursive: true });
 
 async function downloadVideoFromS3() {
   const data = await s3Client.send(

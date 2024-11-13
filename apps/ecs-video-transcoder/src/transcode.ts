@@ -13,10 +13,7 @@ import uploadTranscodedVideos from "./upload";
 const exec = util.promisify(child_process.exec);
 
 const originFile = path.resolve(paths.origin, videoSuperdata.Key);
-const masterManifestExecCmd = path.resolve(
-  "scripts",
-  "create-master-manifest.sh",
-);
+const masterManifestExecCmd = path.resolve("scripts", "create-master-manifest.sh");
 
 async function transcodeVideo() {
   for (const { bitrate, dimensions } of bitrates) {
@@ -31,7 +28,7 @@ async function transcodeVideo() {
 
   console.log("Transcoding completed");
 
-  await exec(masterManifestExecCmd);
+  await exec(`sh ${masterManifestExecCmd}`);
   console.log("master.m3u8 added to destination directory");
 
   await uploadTranscodedVideos();
@@ -44,11 +41,7 @@ function prepAndGetDestinationFile(quality: string) {
   return destination;
 }
 
-function getFFmpegCommand(
-  bitrate: string,
-  dimensions: string,
-  destinaton: string,
-) {
+function getFFmpegCommand(bitrate: string, dimensions: string, destinaton: string) {
   return `ffmpeg -i ${originFile} -vf scale=${dimensions} -b:v ${bitrate} -b:a 128k -codec:a aac \
     -f hls -hls_time 3 -hls_list_size 0 -hls_segment_filename ${destinaton}/'segment%03d.ts' ${destinaton}/index.m3u8`;
 }

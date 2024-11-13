@@ -4,9 +4,6 @@ RUN apk add --no-cache ffmpeg
 
 WORKDIR /usr/src/app
 
-RUN mkdir -p /usr/src/app/raw
-RUN mkdir -p /usr/src/app/transcoded
-
 COPY package.json package.json
 RUN npm install
 
