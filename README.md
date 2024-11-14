@@ -1,3 +1,5 @@
+![system design](https://github.com/mehul-srivastava/not-your-average-youtube-clone/raw/refs/heads/main/system-design.png)
+
 # Urgent
 - cleanup all apps/packages (transfer packages to main package.json, optimize turborepo)
 - switch to esbuild (100x faster builds than tsc)
