@@ -2,7 +2,7 @@ import { Hono } from "hono";
 
 const app = new Hono();
 
-/* Handle progress based on  */
+/* TODO: webhooks */
 app.get("/progress-handler", (c) => {
   return c.text("Hello Hono!");
 });
