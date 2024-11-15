@@ -1,16 +1,20 @@
+# System Design
 ![system design](https://github.com/mehul-srivastava/not-your-average-youtube-clone/raw/refs/heads/main/system-design.png)
 
-# Urgent
+# Tasks
+## Urgent
 - cleanup all apps/packages (transfer packages to main package.json, optimize turborepo)
 - switch to esbuild (100x faster builds than tsc)
 - setup entire infra on terraform
+- purpose of tubrorepo is defeated (fix this)
 
-# Small Fix
+## Small Fix
 - recommendation section (right side) shows NaNM views when it is zero
-- fetch does not work on rtmp server or ecs container
-- live stream is stuck at not started even though it works
+- change links to prod -> make this dynamic to get rid of manual changes
+- live stream status is not getting updated
+- fix live stream view count (big update)
 
-### Work on
+## Extras
 - setup jenkins
 - pinecone recommendation system
 - setup prom. grafana
@@ -20,9 +24,8 @@
 - dockerise app
 - elk search
 - add cassandra
-- fix live stream view count (big update)
 
-### Track Metrics!
+# Track Metrics!
 - Total comments posted
 - Total views across all videos
 - Total live streams created
